@@ -1,0 +1,55 @@
+{
+  "name": "academia",
+  "version": "1.0.0",
+  "description": "A Quasar Framework app",
+  "productName": "Academia",
+  "cordovaId": "net.capoeiraonline.academia.app",
+  "author": "Corky Brown <galaxyblur@gmail.com>",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --ext .js,.vue src",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "apollo-cache-inmemory": "^1.2.2",
+    "apollo-client": "^2.3.2",
+    "apollo-link": "^1.2.2",
+    "apollo-link-http": "^1.5.4",
+    "auth0-js": "^9.6.1",
+    "axios": "^0.18.0",
+    "frappe-charts": "^1.1.0",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.10",
+    "quasar-extras": "^2.0.3",
+    "vue-apollo": "^3.0.0-beta.16",
+    "vue-i18n": "^7.3.3",
+    "vue-scrollto": "^2.11.0",
+    "vuelidate": "^0.7.4"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.1",
+    "devtron": "^1.4.0",
+    "electron": "^2.0.0",
+    "electron-debug": "^1.5.0",
+    "electron-devtools-installer": "^2.2.4",
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-friendly-formatter": "^4.0.1",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-vue": "^4.3.0",
+    "quasar-cli": "^0.16.0"
+  },
+  "engines": {
+    "node": ">= 8.9.0",
+    "npm": ">= 5.6.0",
+    "yarn": ">= 1.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 10"
+  ]
+}
