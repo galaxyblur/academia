@@ -1,4 +1,5 @@
 // Configuration for your app
+const webpack = require('webpack');
 
 module.exports = function (ctx) {
   return {
@@ -35,6 +36,8 @@ module.exports = function (ctx) {
           loader: 'eslint-loader',
           exclude: /(node_modules|quasar)/,
         });
+
+        cfg.plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
       },
     },
     devServer: {

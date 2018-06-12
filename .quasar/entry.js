@@ -15,6 +15,8 @@ Vue.config.productionTip = false
 
 
 
+import 'quasar-extras/roboto-font'
+
 import 'quasar-extras/fontawesome'
 
 
@@ -61,6 +63,9 @@ plugins.push(pluginVuescrollto)
 plugins.forEach(plugin => plugin({ app, router, store, Vue }))
 
 
+
+import electron from 'electron'
+Vue.prototype.$q.electron = electron
 
 
 
