@@ -1,6 +1,8 @@
 // Configuration for your app
 const webpack = require('webpack');
 
+console.log(process.env.URL);
+
 module.exports = function (ctx) {
   const urlDefault = 'http://localhost:8080/';
   const urlEnv = process.env.URL ? process.env.URL : urlDefault;
@@ -14,6 +16,8 @@ module.exports = function (ctx) {
   };
 
   const env = ctx.dev ? envDev : envProd;
+
+  console.log(env.AUTH_CALLBACK_URL);
 
   return {
     // app plugins (/src/plugins)
