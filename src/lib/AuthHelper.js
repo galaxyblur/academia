@@ -6,7 +6,7 @@ import auth0 from 'auth0-js';
 const ID_TOKEN_KEY = 'id_token';
 const CLIENT_ID = 'P8s0A2fYfC3MtSuhqiN2GlNASO4FUwrB';
 const CLIENT_DOMAIN = 'capoeira-online.auth0.com';
-const REDIRECT = 'http://localhost:8080/auth-callback';
+const REDIRECT = process.env.AUTH_CALLBACK_URL;
 const SCOPE = 'openid email profile';
 const AUDIENCE = `https://${CLIENT_DOMAIN}/userinfo`;
 

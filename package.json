@@ -1,7 +1,7 @@
 {
   "name": "academia",
   "version": "1.0.0",
-  "description": "A Quasar Framework app",
+  "description": "A martial arts academy manager",
   "productName": "Academia",
   "cordovaId": "net.capoeiraonline.academia.app",
   "author": "Corky Brown <galaxyblur@gmail.com>",

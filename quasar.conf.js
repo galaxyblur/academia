@@ -2,6 +2,14 @@
 const webpack = require('webpack');
 
 module.exports = function (ctx) {
+  const envDev = {
+    AUTH_CALLBACK_URL: JSON.stringify('http://localhost:8080/auth-callback'),
+  };
+  const envProd = {
+    AUTH_CALLBACK_URL: JSON.stringify('https://cno-academia.netlify.com/auth-callback'),
+  };
+  const env = ctx.dev ? envDev : envProd;
+
   return {
     // app plugins (/src/plugins)
     plugins: [
@@ -22,6 +30,7 @@ module.exports = function (ctx) {
       'fontawesome',
     ],
     supportIE: false,
+    env,
     build: {
       scopeHoisting: true,
       vueRouterMode: 'history',

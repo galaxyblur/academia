@@ -10,7 +10,7 @@
 import './quasar'
 
 import Vue from 'vue'
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 
 
@@ -63,9 +63,6 @@ plugins.push(pluginVuescrollto)
 plugins.forEach(plugin => plugin({ app, router, store, Vue }))
 
 
-
-import electron from 'electron'
-Vue.prototype.$q.electron = electron
 
 
 
