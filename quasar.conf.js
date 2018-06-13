@@ -2,12 +2,17 @@
 const webpack = require('webpack');
 
 module.exports = function (ctx) {
+  const urlDefault = 'http://localhost:8080/';
+  const urlEnv = process.env.URL ? process.env.URL : urlDefault;
+
   const envDev = {
-    AUTH_CALLBACK_URL: JSON.stringify('http://localhost:8080/auth-callback'),
+    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}auth-callback`),
   };
+
   const envProd = {
-    AUTH_CALLBACK_URL: JSON.stringify('https://cno-academia.netlify.com/auth-callback'),
+    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}auth-callback`),
   };
+
   const env = ctx.dev ? envDev : envProd;
 
   return {
