@@ -67,10 +67,7 @@
 </template>
 
 <script>
-import {
-  Dialog,
-  format,
-} from 'quasar';
+import { format } from 'quasar';
 
 import {
   required,
@@ -116,6 +113,11 @@ const saveNewClass = function saveNewClass(variables) {
 };
 
 const removeScheduleItem = function removeScheduleItem(classObj) {
+  /* This doesn't work if the class has instances of attendance.
+   * Need to decide how to handle classes with previous attendance.
+   * Probably should have an archive option.
+   * If the class has no attendances, give option to fully delete.
+   */
   const mutation = this.$apollo.mutate({
     mutation: deleteClass,
     variables: {
@@ -311,27 +313,24 @@ export default {
     },
     removeScheduleItem() {
       this.isRemoveScheduleItemLoading = true;
-      Dialog.create({
+
+      const rm = this.$q.dialog({
         title: 'Are you sure you want to remove this class?',
-        buttons: [
-          'Cancel',
-          {
-            label: 'Remove',
-            handler: () => {
-              removeScheduleItem.call(this, this.classObjMod)
-                .catch((err) => {
-                  this.isRemoveScheduleItemLoading = false;
-                  this.$q.notify(err.message);
-                })
-                .then(() => {
-                  this.isRemoveScheduleItemLoading = false;
-                  this.$emit('schedule-item-deleted');
-                  this.hide();
-                  this.$q.notify('Class removed!');
-                });
-            },
-          },
-        ],
+        cancel: true,
+        ok: 'Remove',
+      });
+
+      rm.then(() => {
+        removeScheduleItem.call(this, this.classObjMod)
+          .then(() => {
+            this.isRemoveScheduleItemLoading = false;
+            this.$emit('schedule-item-deleted');
+            this.hide();
+            this.$q.notify('Class removed!');
+          }, (err) => {
+            this.isRemoveScheduleItemLoading = false;
+            this.$q.notify(err.message);
+          });
       });
     },
     save() {
