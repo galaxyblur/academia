@@ -1,23 +1,19 @@
 // Configuration for your app
 const webpack = require('webpack');
 
-console.log(process.env.URL);
-
 module.exports = function (ctx) {
-  const urlDefault = 'http://localhost:8080/';
+  const urlDefault = 'https://cno-academia.netlify.com';
   const urlEnv = process.env.URL ? process.env.URL : urlDefault;
 
   const envDev = {
-    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}auth-callback`),
+    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}/auth-callback`),
   };
 
   const envProd = {
-    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}auth-callback`),
+    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}/auth-callback`),
   };
 
   const env = ctx.dev ? envDev : envProd;
-
-  console.log(env.AUTH_CALLBACK_URL);
 
   return {
     // app plugins (/src/plugins)
