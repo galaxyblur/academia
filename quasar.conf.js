@@ -1,5 +1,6 @@
 // Configuration for your app
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = function (ctx) {
   const urlDefault = 'http://localhost:8080';
@@ -52,6 +53,14 @@ module.exports = function (ctx) {
         });
 
         cfg.plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
+
+        // copy _redirects file
+        cfg.plugins.push(new CopyWebpackPlugin([
+          {
+            from: 'src/_redirects',
+            to: cfg.output.path,
+          },
+        ]));
       },
     },
     devServer: {
