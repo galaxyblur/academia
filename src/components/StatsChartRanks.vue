@@ -10,7 +10,9 @@
 import { Chart } from 'frappe-charts/dist/frappe-charts.min.esm';
 import 'frappe-charts/dist/frappe-charts.min.css';
 import { allRanks } from '../gql';
-import strings from '../json/strings';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'stats-chart-ranks',

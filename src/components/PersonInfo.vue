@@ -32,9 +32,11 @@
 
 <script>
 import { date } from 'quasar';
-import strings from '../json/strings';
 import { isStudent } from '../lib/PersonHelper';
 import RankDisplay from './RankDisplay';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'person-info',

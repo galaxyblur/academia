@@ -1,1 +1,32 @@
-strings.aikido.json
+{
+  "capoeira": {
+    "productName": "Academia",
+    "person": "student",
+    "persons": "students",
+    "Person": "Student",
+    "Persons": "Students",
+    "rank": "cord",
+    "ranks": "cords",
+    "Rank": "Cord",
+    "Ranks": "Cords",
+    "alias": "appelido",
+    "Alias": "Appelido",
+    "art": "capoeira",
+    "Art": "Capoeira"
+  },
+  "aikido": {
+    "productName": "Aikidojo",
+    "person": "student",
+    "persons": "students",
+    "Person": "Student",
+    "Persons": "Students",
+    "rank": "belt",
+    "ranks": "belts",
+    "Rank": "Belt",
+    "Ranks": "Belts",
+    "alias": "nickname",
+    "Alias": "Nickname",
+    "art": "aikido",
+    "Art": "Aikido"
+  }
+}

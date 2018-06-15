@@ -39,10 +39,12 @@ import {
   allRankColors,
   allRanks,
 } from '../gql';
-import strings from '../json/strings';
 import RanksItemUpdate from '../components/RanksItemUpdate';
 import RankColorsUpdate from '../components/RankColorsUpdate';
 import RankDisplay from '../components/RankDisplay';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'ranks',

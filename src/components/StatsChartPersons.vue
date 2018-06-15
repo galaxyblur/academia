@@ -9,10 +9,12 @@
 <script>
 import { date } from 'quasar';
 import { allPersonsStudents } from '../gql';
-import strings from '../json/strings';
 import { getMinChildAge } from '../lib/PersonHelper';
 import { Chart } from 'frappe-charts/dist/frappe-charts.min.esm';
 import 'frappe-charts/dist/frappe-charts.min.css';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 const minChildAge = getMinChildAge();
 

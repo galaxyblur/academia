@@ -27,9 +27,11 @@
 
 <script>
 import { allPersonsStudents } from '../gql';
-import strings from '../json/strings';
 import PersonsList from '../components/PersonsList';
 import PersonUpdate from '../components/PersonUpdate';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'persons',

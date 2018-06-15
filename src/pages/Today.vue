@@ -113,8 +113,6 @@ import {
   DayOfWeekByNameAndDateWithAttendances,
 } from '../gql';
 
-import strings from '../json/strings';
-
 import { isLoggedIn } from '../lib/AuthHelper';
 
 import {
@@ -132,6 +130,10 @@ import {
 } from '../lib/ClassHelper';
 
 import PersonsList from '../components/PersonsList';
+
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 const minChildAge = getMinChildAge();
 

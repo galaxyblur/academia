@@ -48,12 +48,14 @@
 
 <script>
 import { PersonById } from '../gql';
-import strings from '../json/strings';
 import { isStudent, getPreferredName, getSecondaryName, isGuardian } from '../lib/PersonHelper';
 import PersonInfo from '../components/PersonInfo';
 import PersonInfoGuardians from '../components/PersonInfoGuardians';
 import PersonUpdate from '../components/PersonUpdate';
 import PersonsList from '../components/PersonsList';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'person',

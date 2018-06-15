@@ -56,7 +56,6 @@
 <script>
 import { required } from 'vuelidate/lib/validators';
 import colors from '../json/colors';
-import strings from '../json/strings';
 import RankColorsUpdate from './RankColorsUpdate';
 
 import {
@@ -69,6 +68,10 @@ import {
   addToRankColorInstanceInRank,
   updateRankColorInstance,
 } from '../gql';
+
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 const rmvRankColorInstances = function rmvRankColorInstances(instances) {
   const promises = [];

@@ -39,7 +39,9 @@
 <script>
 import { required } from 'vuelidate/lib/validators';
 import colors from '../json/colors';
-import strings from '../json/strings';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 import {
   allRankColors,

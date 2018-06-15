@@ -104,8 +104,6 @@ import {
   PersonById,
 } from '../gql';
 
-import strings from '../json/strings';
-
 import {
   createPersonInContext,
   getPreferredName,
@@ -117,6 +115,9 @@ import {
 } from '../lib/PersonHelper';
 
 import RankDisplay from './RankDisplay';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'person-update',

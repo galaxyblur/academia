@@ -5,16 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = function (ctx) {
   const urlDefault = 'http://localhost:8080';
   const urlEnv = process.env.URL ? process.env.URL : urlDefault;
-
-  const envDev = {
-    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}/auth-callback`),
-  };
-
-  const envProd = {
-    AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}/auth-callback`),
-  };
-
-  const env = ctx.dev ? envDev : envProd;
+  const artDefault = 'capoeira';
+  const artEnv = process.env.APP_ART_FORM ? process.env.APP_ART_FORM : artDefault;
 
   return {
     // app plugins (/src/plugins)
@@ -37,7 +29,10 @@ module.exports = function (ctx) {
     ],
     supportIE: false,
     build: {
-      env,
+      env: {
+        AUTH_CALLBACK_URL: JSON.stringify(`${urlEnv}/auth-callback`),
+        ART_FORM: JSON.stringify(artEnv),
+      },
       scopeHoisting: true,
       vueRouterMode: 'history',
       // vueCompiler: true,
@@ -54,13 +49,15 @@ module.exports = function (ctx) {
 
         cfg.plugins.push(new webpack.DefinePlugin({ 'global.GENTLY': false }));
 
-        // copy _redirects file
-        cfg.plugins.push(new CopyWebpackPlugin([
-          {
-            from: 'src/_redirects',
-            to: cfg.output.path,
-          },
-        ]));
+        if (!ctx.dev) {
+          // copy _redirects file
+          cfg.plugins.push(new CopyWebpackPlugin([
+            {
+              from: 'src/_redirects',
+              to: cfg.output.path,
+            },
+          ]));
+        }
       },
     },
     devServer: {

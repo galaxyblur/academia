@@ -10,7 +10,9 @@ import {
   UserByAuthId,
 } from '../gql';
 
-import strings from '../json/strings';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 import {
   getAndStoreParameters,

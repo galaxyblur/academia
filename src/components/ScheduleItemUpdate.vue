@@ -85,7 +85,9 @@ import {
   typeClassPersonSegment,
 } from '../gql';
 
-import strings from '../json/strings';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 const formatEnumForDisplay = (enumName => format.capitalize(enumName.toLowerCase()));
 

@@ -14,7 +14,9 @@
 </template>
 
 <script>
-import strings from '../json/strings';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'more',

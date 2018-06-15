@@ -18,9 +18,10 @@
 </template>
 
 <script>
-import strings from '../json/strings';
-
 import { login, isLoggedIn } from '../lib/AuthHelper';
+import { getStrings } from '../lib/StringsHelper';
+
+const strings = getStrings();
 
 export default {
   name: 'authentication',
