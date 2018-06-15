@@ -13,13 +13,13 @@
           v-if="guardian && guardian.id"
           color="negative"
           @click="removeGuardian"
-          loader
+          :loading="isRemoveGuardianLoading"
           class="float-left">
           Remove
         </q-btn>
         <q-btn-group>
           <q-btn color="faded" @click="hide">Cancel</q-btn>
-          <q-btn color="primary" @click="save" loader>Save</q-btn>
+          <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
         </q-btn-group>
       </div>
       <div class="layout-padding">
@@ -172,6 +172,8 @@ export default {
         emailAddress: '',
       },
       Person: undefined,
+      isRemoveGuardianLoading: false,
+      isSaveLoading: false,
     };
   },
   methods: {
@@ -186,15 +188,17 @@ export default {
     },
     removeGuardian() {
       // Needs to know if the guardian is attached to another person
+      this.$q.notify('This feature is not available');
     },
-    save(event, done) {
+    save() {
+      this.isSaveLoading = true;
       let mutation;
 
       // Required to validate all fields
       this.$v.guardianMod.$touch();
 
       if (this.$v.guardianMod.$error) {
-        done();
+        this.isSaveLoading = false;
         return;
       }
 
@@ -205,13 +209,13 @@ export default {
       }
 
       mutation.then(() => {
-        done();
+        this.isSaveLoading = false;
         this.hide();
         this.$q.notify('Parent/guardian saved!');
       });
 
       mutation.catch((error) => {
-        done();
+        this.isSaveLoading = false;
         this.$q.notify(error.message);
       });
     },

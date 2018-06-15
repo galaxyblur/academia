@@ -76,7 +76,11 @@
         </q-card-main>
       </q-card>
       <q-fixed-position v-if="classAttendanceNeedsSyncing" :offset="[10, 10]">
-        <q-btn color="positive" class="shadow-5 animate-bounce" @click="syncClassAttendance" loader>
+        <q-btn
+          color="positive"
+          class="shadow-5 animate-bounce"
+          @click="syncClassAttendance"
+          :loading="isSaveLoading">
           <q-icon name="fa-cloud-upload" />&nbsp;Save Attendance
         </q-btn>
       </q-fixed-position>
@@ -251,6 +255,7 @@ export default {
       DayOfWeek: undefined,
       loadingCounter: 0,
       strings,
+      isSaveLoading: false,
     };
   },
   computed: {
@@ -314,7 +319,8 @@ export default {
     },
   },
   methods: {
-    syncClassAttendance(event, done) {
+    syncClassAttendance() {
+      this.isSaveLoading = true;
       const mutations = [];
       const attendancesUnsynced = difference(this.classAttendance, this.classAttendanceSynced);
       const attendancesRemoved = difference(this.classAttendanceSynced, this.classAttendance);
@@ -379,12 +385,13 @@ export default {
           .catch((err) => {
             this.loadingCounter -= 1;
             this.$q.notify(err.message);
+            this.isSaveLoading = false;
           })
           .then(() => {
             this.loadingCounter -= 1;
             this.classAttendanceNeedsSyncing = false;
             this.$q.notify('Attendance saved.');
-            done();
+            this.isSaveLoading = false;
           });
       }
     },

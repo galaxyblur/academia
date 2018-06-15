@@ -12,12 +12,12 @@
           v-if="classObj"
           color="negative"
           @click="removeScheduleItem"
-          loader
+          :loading="isRemoveScheduleItemLoading"
           class="float-left">
             Remove
         </q-btn>
         <q-btn color="faded" @click="hide">Cancel</q-btn>
-        <q-btn color="primary" @click="save" loader>Save</q-btn>
+        <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
       </div>
       <div class="layout-padding">
         <q-field error-label="name is required" :error="$v.classObjMod.name.$error">
@@ -280,6 +280,8 @@ export default {
       ),
       strings,
       typeClassPersonSegment: [],
+      isRemoveScheduleItemLoading: false,
+      isSaveLoading: false,
     };
   },
   methods: {
@@ -307,7 +309,8 @@ export default {
       const diff = parseInt(val.getTime() - today.getTime(), 10);
       this.classObjMod.startsAt = parseInt(diff / 1000, 10);
     },
-    removeScheduleItem(event, done) {
+    removeScheduleItem() {
+      this.isRemoveScheduleItemLoading = true;
       Dialog.create({
         title: 'Are you sure you want to remove this class?',
         buttons: [
@@ -317,11 +320,11 @@ export default {
             handler: () => {
               removeScheduleItem.call(this, this.classObjMod)
                 .catch((err) => {
-                  done();
+                  this.isRemoveScheduleItemLoading = false;
                   this.$q.notify(err.message);
                 })
                 .then(() => {
-                  done();
+                  this.isRemoveScheduleItemLoading = false;
                   this.$emit('schedule-item-deleted');
                   this.hide();
                   this.$q.notify('Class removed!');
@@ -331,14 +334,15 @@ export default {
         ],
       });
     },
-    save(event, done) {
+    save() {
+      this.isSaveLoading = true;
       let mutation;
 
       // Required to validate all fields
       this.$v.classObjMod.$touch();
 
       if (this.$v.classObjMod.$error) {
-        done();
+        this.isSaveLoading = false;
         return;
       }
 
@@ -351,14 +355,14 @@ export default {
       }
 
       mutation.then(() => {
-        done();
+        this.isSaveLoading = false;
         this.$emit('schedule-item-updated');
         this.hide();
         this.$q.notify('Class saved!');
       });
 
       mutation.catch((error) => {
-        done();
+        this.isSaveLoading = false;
         this.$q.notify(error.message);
       });
     },

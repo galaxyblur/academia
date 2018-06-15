@@ -8,11 +8,16 @@
         <q-toolbar-title>{{ title }}</q-toolbar-title>
       </q-toolbar>
       <div id="ranks-item-update-modal-footer" class="layout-padding bg-light" slot="footer">
-        <q-btn v-if="rank" color="negative" @click="removeRank" loader class="float-left">
+        <q-btn
+          v-if="rank"
+          color="negative"
+          @click="removeRank"
+          :loading="isRemoveRankLoading"
+          class="float-left">
           Remove
         </q-btn>
         <q-btn color="faded" @click="hide">Cancel</q-btn>
-        <q-btn color="primary" @click="save" loader>Save</q-btn>
+        <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
       </div>
       <div class="layout-padding">
         <q-field error-label="invalid name" :error="$v.rankMod.name.$error" class="q-py-sm">
@@ -340,7 +345,8 @@ export default {
         this.rankColorInstances.push(newColor);
       }
     },
-    removeRank(event, done) {
+    removeRank() {
+      this.isRemoveRankLoading = true;
       this.$q.dialog({
         title: `Are you sure you want to remove this ${strings.rank}?`,
         buttons: [
@@ -350,11 +356,11 @@ export default {
             handler: () => {
               removeRank.call(this, this.rank)
                 .catch((err) => {
-                  done();
+                  this.isRemoveRankLoading = false;
                   this.$q.notify(err.message);
                 })
                 .then(() => {
-                  done();
+                  this.isRemoveRankLoading = false;
                   this.$emit('rank-deleted');
                   this.hide();
                   this.$q.notify(`${strings.Rank} removed!`);
@@ -364,13 +370,14 @@ export default {
         ],
       });
     },
-    save(event, done) {
+    save() {
+      this.isSaveLoading = true;
       // Required to validate all fields
       this.$v.rankMod.$touch();
       this.$v.rankColorInstances.$touch();
 
       if (this.$v.rankMod.$error || this.$v.rankColorInstances.$error) {
-        done();
+        this.isSaveLoading = false;
         return;
       }
 
@@ -404,7 +411,7 @@ export default {
       ]);
 
       instanceEditsProm.catch((err) => {
-        done();
+        this.isSaveLoading = false;
         this.$q.notify(err.message);
       });
 
@@ -436,12 +443,12 @@ export default {
           }
 
           mutationColorInstanceLinks.catch((err) => {
-            done();
+            this.isSaveLoading = false;
             this.$q.notify(err.message);
           });
 
           mutationColorInstanceLinks.then(() => {
-            done();
+            this.isSaveLoading = false;
             this.$emit('rank-updated');
             this.hide();
             this.$q.notify(`${strings.Rank} saved!`);
@@ -449,7 +456,7 @@ export default {
         });
 
         mutation.catch((error) => {
-          done();
+          this.isSaveLoading = false;
           this.$q.notify(error.message);
         });
       });

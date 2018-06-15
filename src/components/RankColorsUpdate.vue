@@ -9,7 +9,7 @@
       </q-toolbar>
       <div id="rank-colors-update-modal-footer" class="layout-padding bg-light" slot="footer">
         <q-btn color="faded" @click="hide">Cancel</q-btn>
-        <q-btn color="primary" @click="save" loader>Save</q-btn>
+        <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
       </div>
       <div class="layout-padding">
         <q-list link>
@@ -118,6 +118,7 @@ export default {
       allRankColors: [],
       rankColors: [],
       strings,
+      isSaveLoading: false,
     };
   },
   methods: {
@@ -139,12 +140,13 @@ export default {
         }
       });
     },
-    save(event, done) {
+    save() {
+      this.isSaveLoading = true;
       // Required to validate all fields
       this.$v.rankColors.$touch();
 
       if (this.$v.rankColors.$error) {
-        done();
+        this.isSaveLoading = false;
         return;
       }
 
@@ -185,14 +187,14 @@ export default {
         const mutation = Promise.all(mutations);
 
         mutation.then(() => {
-          done();
+          this.isSaveLoading = false;
           this.$emit('colors-update');
           this.hide();
           this.$q.notify(`${strings.Rank} colors saved!`);
         });
 
         mutation.catch((error) => {
-          done();
+          this.isSaveLoading = false;
           this.$q.notify(error.message);
         });
       }

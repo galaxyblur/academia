@@ -10,10 +10,8 @@
 import './quasar'
 
 import Vue from 'vue'
-Vue.config.productionTip = true
+Vue.config.productionTip = false
 
-
-import '../src-pwa/register-service-worker.js'
 
 
 

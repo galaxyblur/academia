@@ -12,13 +12,13 @@
           v-if="person.id"
           color="negative"
           @click="removePerson"
-          loader
+          :loading="isRemovePersonLoading"
           class="float-left">
           Remove
         </q-btn>
         <q-btn-group>
           <q-btn color="faded" @click="hide">Cancel</q-btn>
-          <q-btn color="primary" @click="save" loader>Save</q-btn>
+          <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
         </q-btn-group>
       </div>
       <div class="layout-padding">
@@ -162,6 +162,8 @@ export default {
       Person: undefined,
       PersonMod: this.getPersonModInitialData(),
       strings,
+      isRemovePersonLoading: false,
+      isSaveLoading: false,
     };
   },
   computed: {
@@ -241,7 +243,8 @@ export default {
         })(),
       );
     },
-    removePerson(event, done) {
+    removePerson() {
+      this.isRemovePersonLoading = true;
       this.$q.dialog({
         title: 'Remove Person',
         message: 'Are you sure?',
@@ -252,8 +255,8 @@ export default {
             handler: () => {
               safeDeletePersonInContext.call(this, this.PersonMod)
                 .catch((err) => {
-                  done();
                   this.$q.notify(err.message);
+                  this.isRemovePersonLoading = false;
                 })
                 .then((result) => {
                   let msg = `Removed ${getPreferredName(this.PersonMod)}`;
@@ -263,7 +266,7 @@ export default {
                   }
 
                   this.$q.notify(`${msg}.`);
-                  done();
+                  this.isRemovePersonLoading = false;
                   this.hide();
                   this.$emit('delete-person', this.PersonMod);
                 });
@@ -272,14 +275,15 @@ export default {
         ],
       });
     },
-    save(event, done) {
+    save() {
+      this.isSaveLoading = true;
       let mutation;
 
       // Required to validate all fields
       this.$v.PersonMod.$touch();
 
       if (this.$v.PersonMod.$error) {
-        done();
+        this.isSaveLoading = false;
         return;
       }
 
@@ -290,7 +294,7 @@ export default {
       }
 
       mutation.then((personResult) => {
-        done();
+        this.isSaveLoading = false;
         this.hide();
         this.$q.notify(`Info for ${getPreferredName(this.PersonMod)} was saved!`);
 
@@ -306,7 +310,7 @@ export default {
       });
 
       mutation.catch((error) => {
-        done();
+        this.isSaveLoading = false;
         this.$q.notify(error.message);
       });
     },
