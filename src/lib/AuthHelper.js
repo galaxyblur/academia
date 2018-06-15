@@ -13,7 +13,6 @@ const AUDIENCE = `https://${CLIENT_DOMAIN}/userinfo`;
 const auth = new auth0.WebAuth({
   clientID: CLIENT_ID,
   domain: CLIENT_DOMAIN,
-  redirectUri: REDIRECT,
 });
 
 let onUserIdCallback;
@@ -102,6 +101,7 @@ export function login() {
 
   auth.authorize({
     responseType: 'token id_token',
+    redirectUri: REDIRECT,
     audience: AUDIENCE,
     scope: SCOPE,
     nonce,

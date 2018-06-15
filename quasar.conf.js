@@ -2,7 +2,7 @@
 const webpack = require('webpack');
 
 module.exports = function (ctx) {
-  const urlDefault = 'https://cno-academia.netlify.com';
+  const urlDefault = 'http://localhost:8080';
   const urlEnv = process.env.URL ? process.env.URL : urlDefault;
 
   const envDev = {
@@ -35,8 +35,8 @@ module.exports = function (ctx) {
       'fontawesome',
     ],
     supportIE: false,
-    env,
     build: {
+      env,
       scopeHoisting: true,
       vueRouterMode: 'history',
       // vueCompiler: true,
