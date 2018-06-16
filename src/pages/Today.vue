@@ -72,6 +72,8 @@
         <q-card-main>
           <persons-list
             :list-header-text="personsUnknown.length + ' students have no birthdate'"
+            list-header-help-text="Students need a birthdate to be tracked as a child or adult."
+            list-header-icon="fas fa-question-circle"
             :persons="personsUnknown" />
         </q-card-main>
       </q-card>

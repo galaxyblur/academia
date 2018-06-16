@@ -1,6 +1,14 @@
 <template>
   <q-list separator link>
-    <q-list-header v-if="listHeaderText">{{ listHeaderText }}</q-list-header>
+    <q-list-header v-if="listHeaderText">
+      {{ listHeaderText }}
+      <q-btn
+        v-if="handleListHeaderHelp"
+        icon="fas fa-question-circle"
+        size="sm"
+        dense
+        @click="handleListHeaderHelp" />
+    </q-list-header>
     <q-item v-for="(p, pi) in persons" :key="pi" :to="{ name: 'Person', params: { id: p.id } }">
       <q-item-main>
         <q-item-tile label>
@@ -30,10 +38,16 @@ export default {
   components: {
     RankDisplay,
   },
-  props: ['persons', 'listHeaderText'],
+  props: ['persons', 'listHeaderText', 'listHeaderHelpText'],
   methods: {
     getPreferredName,
     getSecondaryName,
+    handleListHeaderHelp() {
+      this.$q.dialog({
+        title: 'About this list',
+        message: this.listHeaderHelpText,
+      });
+    },
   },
 };
 </script>
