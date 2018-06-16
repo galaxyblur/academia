@@ -21,6 +21,7 @@ import {
   getIdToken,
   getName,
   setUserId,
+  logout,
 } from '../lib/AuthHelper';
 
 export default {
@@ -86,28 +87,22 @@ export default {
         title: 'Error',
         message: 'There was a problem saving your account. Please try again.',
       });
+      logout();
     },
     promptForGroupName() {
       return new Promise((res) => {
         this.$q.dialog({
           title: 'Group Name',
           message: 'Please enter a name for your group. (You can change this later.)',
-          form: {
-            name: {
-              type: 'text',
-              label: 'Group Name',
-              model: '',
-            },
+          prompt: {
+            model: '',
+            type: 'text',
+            label: 'Group Name',
           },
-          buttons: [
-            'Cancel',
-            {
-              label: 'Save',
-              handler(data) {
-                res(data.name);
-              },
-            },
-          ],
+          cancel: false,
+          color: 'secondary',
+        }).then((data) => {
+          res(data.name);
         });
       });
     },

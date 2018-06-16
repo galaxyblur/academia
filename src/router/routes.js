@@ -55,6 +55,11 @@ export default [
         component: () => import('pages/Stats'),
       },
       {
+        name: 'Account',
+        path: 'account',
+        component: () => import('pages/Account'),
+      },
+      {
         name: 'AuthenticationCallback',
         path: 'auth-callback', // #access_token=:accessToken&scope=:scope&expires_in=:expiresIn&token_type=:tokenType&state=:state&id_token=:idToken',
         component: () => import('pages/AuthenticationCallback'),

@@ -44,6 +44,12 @@ export default {
           label: 'Stats',
           sublabel: 'View some interesting data about your group.',
         },
+        {
+          routeName: 'Account',
+          icon: 'fas fa-user-cog',
+          label: 'My Account',
+          sublabel: 'Manage your account.',
+        },
       ],
       strings,
     };
