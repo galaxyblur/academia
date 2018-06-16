@@ -69,7 +69,6 @@ export default {
           },
         });
 
-        query.catch(this.handleAuthError);
         query.then((userResult) => {
           this.$q.loading.hide();
 
@@ -90,6 +89,7 @@ export default {
         message: 'There was a problem saving your account. Please try again.',
       });
       logout();
+      this.goToDefaultRoute();
     },
     promptForGroupName() {
       return new Promise((res) => {
