@@ -104,7 +104,7 @@ export default {
           cancel: false,
           color: 'secondary',
         }).then((data) => {
-          res(data.name);
+          res(data);
         });
       });
     },
