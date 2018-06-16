@@ -71,6 +71,8 @@ export default {
 
         query.catch(this.handleAuthError);
         query.then((userResult) => {
+          this.$q.loading.hide();
+
           if (userResult && userResult.data && userResult.data.User && userResult.data.User.id) {
             setUserId(userResult.data.User.id);
             this.goToDefaultRoute();
@@ -83,8 +85,8 @@ export default {
       }, this.handleAuthError);
     },
     handleAuthError() {
-      this.$q.dialog({
-        title: 'Error',
+      this.$q.loading.hide();
+      this.$q.notify({
         message: 'There was a problem saving your account. Please try again.',
       });
       logout();
