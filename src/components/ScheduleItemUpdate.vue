@@ -20,19 +20,27 @@
         <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
       </div>
       <div class="layout-padding">
-        <q-field error-label="name is required" :error="$v.classObjMod.name.$error">
+        <q-field
+          class="q-py-sm"
+          error-label="name is required"
+          :error="$v.classObjMod.name.$error">
           <q-input float-label="Name" v-model="classObjMod.name" />
         </q-field>
         <q-field
+          class="q-py-sm"
           label="Day"
           error-label="day is required"
           :error="$v.classObjMod.dayOfWeekId.$error">
           <q-option-group
             type="radio"
             v-model="classObjMod.dayOfWeekId"
-            :options="dayOfWeekOptions"/>
+            :options="dayOfWeekOptions"
+          />
         </q-field>
-        <q-field error-label="invalid start time" :error="$v.classObjMod.startsAtDate.$error">
+        <q-field
+          class="q-py-sm"
+          error-label="invalid start time"
+          :error="$v.classObjMod.startsAtDate.$error">
           <q-datetime
             type="time"
             format="hh:mm a"
@@ -42,7 +50,10 @@
             @change="handleStartsAtDateChange"
             v-model="classObjMod.startsAtDate" />
         </q-field>
-        <q-field error-label="invalid end time" :error="$v.classObjMod.endsAtDate.$error">
+        <q-field
+          class="q-py-sm"
+          error-label="invalid end time"
+          :error="$v.classObjMod.endsAtDate.$error">
           <q-datetime
             type="time"
             format="hh:mm a"
@@ -53,6 +64,7 @@
             v-model="classObjMod.endsAtDate" />
         </q-field>
         <q-field
+          class="q-py-sm"
           label="For"
           :error-label="'invalid ' + strings.person + ' group'"
           :error="$v.classObjMod.personsSegment.$error">
@@ -172,8 +184,8 @@ export default {
       update(data) {
         const allDays = [];
 
-        if (data && data.allDays && data.allDays.length > 0) {
-          data.allDays.forEach((d, i) => {
+        if (data && data.allDayOfWeeks && data.allDayOfWeeks.length > 0) {
+          data.allDayOfWeeks.forEach((d, i) => {
             allDays[i] = Object.assign({
               displayName: formatEnumForDisplay(d.name),
             }, d);
