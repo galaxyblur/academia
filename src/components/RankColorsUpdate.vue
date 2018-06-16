@@ -8,8 +8,10 @@
         <q-toolbar-title>Manage Your Group's {{ strings.Rank }} Colors</q-toolbar-title>
       </q-toolbar>
       <div id="rank-colors-update-modal-footer" class="layout-padding bg-light" slot="footer">
-        <q-btn color="faded" @click="hide">Cancel</q-btn>
-        <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
+        <q-btn-group>
+          <q-btn color="faded" @click="hide">Cancel</q-btn>
+          <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
+        </q-btn-group>
       </div>
       <div class="layout-padding">
         <q-list link>

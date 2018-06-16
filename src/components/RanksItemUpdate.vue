@@ -16,8 +16,10 @@
           class="float-left">
           Remove
         </q-btn>
-        <q-btn color="faded" @click="hide">Cancel</q-btn>
-        <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
+        <q-btn-group>
+          <q-btn color="faded" @click="hide">Cancel</q-btn>
+          <q-btn color="primary" @click="save" :loading="isSaveLoading">Save</q-btn>
+        </q-btn-group>
       </div>
       <div class="layout-padding">
         <q-field error-label="invalid name" :error="$v.rankMod.name.$error" class="q-py-sm">
