@@ -45,7 +45,7 @@
 
 <script>
 import { date } from 'quasar';
-import { allDayOfWeeksClasses } from '../gql';
+import { allClassesInGroup } from '../gql';
 import ScheduleItemUpdate from '../components/ScheduleItemUpdate';
 
 export default {
@@ -57,27 +57,27 @@ export default {
     this.$store.commit('app/setTitle', 'Schedule');
   },
   mounted() {
-    if (this.$route.query.refresh && this.allDayOfWeeks.length > 0) {
+    if (this.$route.query.refresh && this.allClasses.length > 0) {
       this.handleUpdateScheduleItem();
     }
   },
   apollo: {
-    allDayOfWeeks: {
+    allClasses: {
       loadingKey: 'loadingCounter',
-      query: allDayOfWeeksClasses,
+      query: allClassesInGroup,
       skip() {
-        return !this.$store.state.user.User;
+        return !this.$store.getters['user/groupId'];
       },
       variables() {
         return {
-          userId: this.$store.state.user.User.id,
+          groupId: this.$store.getters['user/groupId'],
         };
       },
     },
   },
   data() {
     return {
-      allDayOfWeeks: [],
+      allClasses: [],
       loadingCounter: 0,
     };
   },
@@ -85,10 +85,15 @@ export default {
     classesByDay() {
       const classes = {};
 
-      this.days.forEach((day) => {
-        const [groupDay] = this.allDayOfWeeks.filter(d => d.id === day.id);
-        classes[day.id] = groupDay ? groupDay.classes : [];
-      });
+      if (this.allClasses.length > 0) {
+        this.days.forEach((d) => {
+          classes[d.id] = [];
+        });
+
+        this.allClasses.forEach((c) => {
+          classes[c.dayOfWeek.id].push(c);
+        });
+      }
 
       return classes;
     },
@@ -118,7 +123,7 @@ export default {
       return date.formatDate(d.getTime(), 'h:mma');
     },
     handleUpdateScheduleItem() {
-      this.$apollo.queries.allDayOfWeeks.refetch();
+      this.$apollo.queries.allClasses.refetch();
     },
   },
 };

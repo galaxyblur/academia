@@ -592,25 +592,17 @@ export const allDayOfWeeks = gql`
   }
 `;
 
-export const allDayOfWeeksClasses = gql`
-  query DayOfWeeksInUserGroup($userId: ID!) {
-    allDayOfWeeks(filter: {
-      classes_some: {
-        group: {
-          users_some: {
-            id: $userId
-          }
-        }
-      }
-    }) {
-      id,
+export const allClassesInGroup = gql`
+  query ClassInUserGroup($groupId: ID!) {
+    allClasses(filter: {group: {id: $groupId}}) {
+      id
       name,
-      classes {
+      startsAt,
+      endsAt,
+      personsSegment,
+      dayOfWeek {
         id,
-        name,
-        startsAt,
-        endsAt,
-        personsSegment
+        name
       }
     }
   }
@@ -657,6 +649,7 @@ export const ClassByIdWithAttendances = gql`
       endsAt,
       personsSegment,
       dayOfWeek {
+        id,
         name
       },
       attendances(filter: {
