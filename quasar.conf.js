@@ -82,7 +82,6 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
-        //
         'QLayoutFooter',
         'QBtnGroup',
         'QTabs',
@@ -130,23 +129,8 @@ module.exports = function (ctx) {
         theme_color: '#027be3',
         icons: [
           {
-            src: 'statics/icons/icon-128x128.png',
-            sizes: '128x128',
-            type: 'image/png',
-          },
-          {
             src: 'statics/icons/icon-192x192.png',
             sizes: '192x192',
-            type: 'image/png',
-          },
-          {
-            src: 'statics/icons/icon-256x256.png',
-            sizes: '256x256',
-            type: 'image/png',
-          },
-          {
-            src: 'statics/icons/icon-384x384.png',
-            sizes: '384x384',
             type: 'image/png',
           },
           {
