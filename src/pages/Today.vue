@@ -5,7 +5,7 @@
 
     <q-card v-if="allPersonsBirthdays.length > 0" color="secondary" class="q-mt-md">
       <q-card-main>
-        <q-icon name="fa-birthday-cake" />
+        <q-icon name="fas fa-birthday-cake" />
         {{ allPersonsBirthdays.length }}
         birthday<template v-if="allPersonsBirthdays.length > 1">s</template> this week:
         <em>{{ birthdayNames }}</em>
