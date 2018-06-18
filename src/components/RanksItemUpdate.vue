@@ -271,6 +271,8 @@ export default {
       rankColorInstancesRmvd: [],
       rankMod: Object.assign({}, rankDefaults, this.rank),
       strings,
+      isRemoveRankLoading: false,
+      isSaveLoading: false,
     };
   },
   mounted() {
@@ -299,6 +301,13 @@ export default {
     }
   },
   methods: {
+    clear() {
+      this.title = '';
+      this.rankColorInstances = [];
+      this.rankMod = {};
+      this.rankColorInstancesRmvd = [];
+      this.rank = undefined;
+    },
     show() {
       this.isOpen = true;
     },
@@ -313,17 +322,12 @@ export default {
             evt.stopPropagation();
             this.$q.dialog({
               title: `Remove "${color.color.name.toLowerCase()}" from "Color ${index + 1}"?`,
-              buttons: [
-                'Cancel',
-                {
-                  label: 'Remove',
-                  handler: () => {
-                    const rmvd = this.rankColorInstances.splice(index, 1);
-                    this.rankColorInstancesRmvd = this.rankColorInstancesRmvd.concat(rmvd);
-                  },
-                },
-              ],
-            });
+              cancel: true,
+              ok: 'Remove',
+            }).then(() => {
+              const rmvd = this.rankColorInstances.splice(index, 1);
+              this.rankColorInstancesRmvd = this.rankColorInstancesRmvd.concat(rmvd);
+            }, () => {});
           },
         },
       ];

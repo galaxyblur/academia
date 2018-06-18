@@ -17,7 +17,7 @@
         <q-list link>
           <q-item v-for="(c, ci) in colors" :key="ci" tag="label">
             <q-item-side>
-              <q-checkbox v-model="rankColors" :val="c.name" @change="handleColorStatusChange">
+              <q-checkbox v-model="rankColors" :val="c.name" @input="handleColorStatusChange">
               </q-checkbox>
             </q-item-side>
             <q-item-main>
@@ -149,6 +149,11 @@ export default {
 
       if (this.$v.rankColors.$error) {
         this.isSaveLoading = false;
+        this.$q.dialog({
+          title: 'No Colors Selected',
+          message: 'Please select at least one color to continue.',
+        });
+
         return;
       }
 

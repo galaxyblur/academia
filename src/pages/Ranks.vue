@@ -30,7 +30,7 @@
       :title="'Add ' + strings.Rank"
       @rank-deleted="handleUpdateRank"
       @rank-updated="handleUpdateRank" />
-    <rank-colors-update ref="rankColorsUpdate" />
+    <rank-colors-update ref="rankColorsUpdate" @colors-update="handleUpdateRankColors" />
   </q-page>
 </template>
 
@@ -115,14 +115,19 @@ export default {
         });
 
         d.then(() => {
+          // this.$refs.rankColorsUpdate.clear();
           this.$refs.rankColorsUpdate.show();
-        });
+        }, () => {});
       } else {
+        this.$refs.rankColorsUpdate.clear();
         this.$refs.ranksItemUpdate.show();
       }
     },
     handleUpdateRank() {
       this.$apollo.queries.allRanks.refetch();
+    },
+    handleUpdateRankColors() {
+      this.$apollo.queries.allRankColors.refetch();
     },
   },
 };
