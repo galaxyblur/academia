@@ -101,6 +101,7 @@ module.exports = function (ctx) {
         'QPopover',
         'QChip',
         'QPageSticky',
+        'QToggle',
       ],
       directives: [
         'Ripple',

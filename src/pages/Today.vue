@@ -31,6 +31,18 @@
     </q-card>
 
     <template v-if="today && today.classes.length > 0">
+      <q-card v-if="!isSetToToday" class="q-mt-md text-center">
+        <q-card-main>
+          <p v-if="isEditingPreviousDateDisabled">Editing previous classes is currently locked.</p>
+          <p v-else>
+            Editing previous classes is currently <strong class="text-negative">unlocked</strong>.
+          </p>
+          <q-toggle
+            v-model="isEditingPreviousDateDisabled"
+            checked-icon="fas fa-lock"
+            unchecked-icon="fas fa-unlock" />
+        </q-card-main>
+      </q-card>
       <q-card
         v-for="(c, ic) in today.classes"
         :key="ic"
@@ -287,7 +299,7 @@ export default {
       loadingCounter: 0,
       strings,
       isSaveLoading: false,
-      isEditingPreviousDateEnabled: false,
+      isEditingPreviousDateDisabled: true,
     };
   },
   computed: {
@@ -342,7 +354,7 @@ export default {
       return dateNow.getTime() === dateTodayCopy.getTime();
     },
     isAttendanceEditable() {
-      return this.isSetToToday || this.isEditingPreviousDateEnabled;
+      return this.isSetToToday || !this.isEditingPreviousDateDisabled;
     },
   },
   watch: {
@@ -359,6 +371,9 @@ export default {
       } else {
         this.$q.loading.hide();
       }
+    },
+    dateToday() {
+      this.isEditingPreviousDateDisabled = true;
     },
   },
   methods: {
