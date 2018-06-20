@@ -83,7 +83,7 @@
           class="shadow-5 animate-bounce"
           @click="syncClassAttendance"
           :loading="isSaveLoading">
-          <q-icon name="fas fa-cloud-upload" />&nbsp;Save Attendance
+          <q-icon name="fas fa-cloud-upload-alt" />&nbsp;Save Attendance
         </q-btn>
       </q-page-sticky>
     </template>
