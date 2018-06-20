@@ -1,7 +1,25 @@
 <template>
   <q-page padding>
     <h4 class="text-center q-ma-none">Classes</h4>
-    <h5 v-if="today" class="text-center q-ma-none">{{ today.displayDate }}</h5>
+    <h5 v-if="today" id="today-subhead" class="text-center q-ma-none">
+      <q-btn icon="fas fa-arrow-alt-circle-left" dense class="today-subhead-hidden" />
+      <q-btn
+        icon="fas fa-chevron-circle-left"
+        :class="{ todaySubheadHidden: false }"
+        @click="goBackOneDay"
+        dense />
+      {{ today.displayDate }}
+      <q-btn
+        icon="fas fa-chevron-circle-right"
+        :class="{ 'today-subhead-hidden': isSetToToday }"
+        @click="goForwardOneDay"
+        dense />
+      <q-btn
+        icon="fas fa-arrow-alt-circle-right"
+        :class="{ 'today-subhead-hidden': isSetToToday }"
+        @click="goToToday"
+        dense />
+    </h5>
 
     <q-card v-if="allPersonsBirthdays.length > 0" color="secondary" class="q-mt-md">
       <q-card-main>
@@ -205,18 +223,18 @@ export default {
       loadingKey: 'loadingCounter',
       query: DayOfWeekByNameAndDateWithAttendances,
       variables() {
-        // const todayName = 'TUESDAY';
-        const today = new Date();
-        const tomorrow = new Date();
-        const todayName = date.formatDate(today.getTime(), 'dddd').toUpperCase();
+        this.dateToday.setHours(0, 0, 0, 0);
 
-        today.setHours(0, 0, 0, 0);
-        tomorrow.setHours(0, 0, 0, 0);
-        tomorrow.setDate(today.getDate() + 1);
+        // const todayName = 'TUESDAY';
+        const todayName = date.formatDate(this.dateToday.getTime(), 'dddd').toUpperCase();
+
+        const dateTomorrow = new Date();
+        dateTomorrow.setHours(0, 0, 0, 0);
+        dateTomorrow.setDate(this.dateToday.getDate() + 1);
 
         return {
-          today,
-          tomorrow,
+          today: this.dateToday,
+          tomorrow: dateTomorrow,
           name: todayName,
           groupId: this.$store.getters['user/groupId'],
         };
@@ -248,6 +266,7 @@ export default {
   },
   data() {
     return {
+      dateToday: new Date(),
       allPersons: [],
       allPersonsBirthdays: [],
       classAttendance: [],
@@ -292,16 +311,24 @@ export default {
       return this.allPersons.filter(s => !s.birthdate);
     },
     today() {
-      const todayDate = new Date();
       let today;
 
       if (this.DayOfWeek) {
         today = Object.assign({
-          displayDate: date.formatDate(todayDate.getTime(), 'dddd, MMMM D YYYY'),
+          displayDate: date.formatDate(this.dateToday.getTime(), 'dddd, MMMM D YYYY'),
         }, this.DayOfWeek);
       }
 
       return today;
+    },
+    isSetToToday() {
+      const dateNow = new Date();
+      dateNow.setHours(0, 0, 0, 0);
+
+      const dateTodayCopy = new Date(this.dateToday.getTime());
+      dateTodayCopy.setHours(0, 0, 0, 0);
+
+      return dateNow.getTime() === dateTodayCopy.getTime();
     },
   },
   watch: {
@@ -321,6 +348,23 @@ export default {
     },
   },
   methods: {
+    goBackOneDay() {
+      const back = this.dateToday.getDate() - 1;
+      const newDate = new Date();
+      newDate.setDate(back);
+
+      this.dateToday = newDate;
+    },
+    goForwardOneDay() {
+      const fwd = this.dateToday.getDate() + 1;
+      const newDate = new Date();
+      newDate.setDate(fwd);
+
+      this.dateToday = newDate;
+    },
+    goToToday() {
+      this.dateToday = new Date();
+    },
     syncClassAttendance() {
       this.isSaveLoading = true;
       const mutations = [];
@@ -456,3 +500,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+#today-subhead .today-subhead-hidden {
+  visibility: hidden;
+}
+</style>
