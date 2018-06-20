@@ -85,11 +85,11 @@ export default {
     classesByDay() {
       const classes = {};
 
-      if (this.allClasses.length > 0) {
-        this.days.forEach((d) => {
-          classes[d.id] = [];
-        });
+      this.days.forEach((d) => {
+        classes[d.id] = [];
+      });
 
+      if (this.allClasses.length > 0) {
         this.allClasses.forEach((c) => {
           classes[c.dayOfWeek.id].push(c);
         });

@@ -2,7 +2,7 @@
   <q-modal
     v-model="isOpen"
     ref="scheduleItemUpdate"
-    content-css="{minWidth: '80vw', minHeight: '80vh'}">
+    :content-css="{minWidth: '80vw', minHeight: '80vh'}">
     <q-modal-layout>
       <q-toolbar slot="header">
         <q-toolbar-title>{{ title }}</q-toolbar-title>
