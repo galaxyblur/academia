@@ -77,15 +77,15 @@
             :persons="personsUnknown" />
         </q-card-main>
       </q-card>
-      <q-fixed-position v-if="classAttendanceNeedsSyncing" :offset="[10, 10]">
+      <q-page-sticky v-if="classAttendanceNeedsSyncing" position="bottom-right" :offset="[10, 10]">
         <q-btn
           color="positive"
           class="shadow-5 animate-bounce"
           @click="syncClassAttendance"
           :loading="isSaveLoading">
-          <q-icon name="fa-cloud-upload" />&nbsp;Save Attendance
+          <q-icon name="fas fa-cloud-upload" />&nbsp;Save Attendance
         </q-btn>
-      </q-fixed-position>
+      </q-page-sticky>
     </template>
 
     <template v-else-if="loadingCounter < 1">
