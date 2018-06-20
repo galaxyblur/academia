@@ -1,7 +1,7 @@
 <template>
   <dl class="horizontal">
     <template v-if="isStudent">
-      <dt>Cord</dt>
+      <dt>{{ strings.Rank }}</dt>
       <dd>
         <rank-display v-if="person.rank" v-bind="person.rank" :display-name="true" />
         <span v-else>&nbsp;</span>
