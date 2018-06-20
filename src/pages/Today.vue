@@ -31,7 +31,11 @@
     </q-card>
 
     <template v-if="today && today.classes.length > 0">
-      <q-card v-for="(c, ic) in today.classes" :key="ic" class="q-mt-md">
+      <q-card
+        v-for="(c, ic) in today.classes"
+        :key="ic"
+        :text-color="!isAttendanceEditable ? 'faded' : ''"
+        class="q-mt-md">
         <q-card-title>
           {{ c.name }}
           <small>{{ getClassTimeDisplay(c.startsAt) }}-{{ getClassTimeDisplay(c.endsAt) }}</small>
@@ -59,7 +63,10 @@
               </q-item-tile>
             </q-item-main>
             <q-item-side right>
-              <q-checkbox v-model="classAttendance" :val="s.attendanceKey"></q-checkbox>
+              <q-checkbox
+                v-model="classAttendance"
+                :val="s.attendanceKey"
+                :disable="!isAttendanceEditable" />
             </q-item-side>
           </q-item>
           <template v-if="personsUnknown.length > 0">
@@ -80,7 +87,10 @@
                 </q-item-tile>
               </q-item-main>
               <q-item-side right>
-                <q-checkbox v-model="classAttendance" :val="s.attendanceKey"></q-checkbox>
+                <q-checkbox
+                  v-model="classAttendance"
+                  :val="s.attendanceKey"
+                  :disable="!isAttendanceEditable" />
               </q-item-side>
             </q-item>
           </template>
@@ -277,6 +287,7 @@ export default {
       loadingCounter: 0,
       strings,
       isSaveLoading: false,
+      isEditingPreviousDateEnabled: false,
     };
   },
   computed: {
@@ -329,6 +340,9 @@ export default {
       dateTodayCopy.setHours(0, 0, 0, 0);
 
       return dateNow.getTime() === dateTodayCopy.getTime();
+    },
+    isAttendanceEditable() {
+      return this.isSetToToday || this.isEditingPreviousDateEnabled;
     },
   },
   watch: {
