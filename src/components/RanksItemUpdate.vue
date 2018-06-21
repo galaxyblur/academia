@@ -302,7 +302,6 @@ export default {
   },
   methods: {
     clear() {
-      this.title = '';
       this.rankColorInstances = [];
       this.rankMod = {};
       this.rankColorInstancesRmvd = [];
@@ -355,26 +354,21 @@ export default {
       this.isRemoveRankLoading = true;
       this.$q.dialog({
         title: `Are you sure you want to remove this ${strings.rank}?`,
-        buttons: [
-          'Cancel',
-          {
-            label: 'Remove',
-            handler: () => {
-              removeRank.call(this, this.rank)
-                .catch((err) => {
-                  this.isRemoveRankLoading = false;
-                  this.$q.notify(err.message);
-                })
-                .then(() => {
-                  this.isRemoveRankLoading = false;
-                  this.$emit('rank-deleted');
-                  this.hide();
-                  this.$q.notify(`${strings.Rank} removed!`);
-                });
-            },
-          },
-        ],
-      });
+        cancel: true,
+        ok: 'Remove',
+      }).then(() => {
+        removeRank.call(this, this.rank)
+          .catch((err) => {
+            this.isRemoveRankLoading = false;
+            this.$q.notify(err.message);
+          })
+          .then(() => {
+            this.isRemoveRankLoading = false;
+            this.$emit('rank-deleted');
+            this.hide();
+            this.$q.notify(`${strings.Rank} removed!`);
+          });
+      }, () => {});
     },
     save() {
       this.isSaveLoading = true;

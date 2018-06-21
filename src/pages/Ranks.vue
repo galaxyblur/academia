@@ -115,11 +115,11 @@ export default {
         });
 
         d.then(() => {
-          // this.$refs.rankColorsUpdate.clear();
+          this.$refs.ranksItemUpdate.clear();
           this.$refs.rankColorsUpdate.show();
         }, () => {});
       } else {
-        this.$refs.rankColorsUpdate.clear();
+        this.$refs.ranksItemUpdate.clear();
         this.$refs.ranksItemUpdate.show();
       }
     },
