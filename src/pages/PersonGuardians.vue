@@ -20,6 +20,9 @@
         </q-item>
       </q-list>
     </div>
+    <div v-else-if="loadingCounter < 1" class="text-center q-ma-md">
+      No parents/guardians found.
+    </div>
   </q-page>
 </template>
 
