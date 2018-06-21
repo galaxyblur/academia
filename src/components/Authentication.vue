@@ -39,15 +39,14 @@ export default {
       login();
       this.isStartLoading = false;
     },
-  },
-  mounted() {
-    setInterval(() => {
+    show() {
       if (!isLoggedIn() && this.$route.name !== 'AuthenticationCallback') {
         this.isOpen = true;
-      } else {
-        this.isOpen = false;
       }
-    }, 1000);
+    },
+    hide() {
+      this.isOpen = false;
+    },
   },
 };
 </script>

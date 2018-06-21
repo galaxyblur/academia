@@ -13,7 +13,7 @@
       <!-- Navigation for iOS theme -->
       <app-nav v-if="$q.theme === 'ios'" />
     </q-layout-footer>
-    <authentication />
+    <authentication ref="authentication" />
   </q-layout>
 </template>
 
@@ -27,7 +27,7 @@ import {
   UserById,
 } from '../gql';
 
-import { onUserId } from '../lib/AuthHelper';
+import { onUserId, logout } from '../lib/AuthHelper';
 
 export default {
   name: 'LayoutDefault',
@@ -46,6 +46,16 @@ export default {
     onUserId((id) => {
       this.userId = id;
     });
+
+    if (!this.userId) {
+      this.showAuth();
+    }
+  },
+  methods: {
+    showAuth() {
+      this.$refs.authentication.show();
+      logout();
+    },
   },
   apollo: {
     allDayOfWeeks: {
@@ -69,7 +79,12 @@ export default {
       result(res) {
         if (res && res.data && res.data.User) {
           this.$store.commit('user/setUser', res.data.User);
+        } else {
+          this.showAuth();
         }
+      },
+      error() {
+        this.showAuth();
       },
     },
   },

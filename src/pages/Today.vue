@@ -262,7 +262,7 @@ export default {
         };
       },
       skip() {
-        return !isLoggedIn() || !this.$store.state.user.User;
+        return !isLoggedIn() || !this.$store.getters['user/groupId'];
       },
       update(data) {
         return data.DayOfWeek;

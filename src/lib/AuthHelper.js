@@ -26,6 +26,10 @@ function clearProfile() {
   window.localStorage.removeItem('userId');
 }
 
+function clearNonce() {
+  window.localStorage.removeItem('nonce');
+}
+
 function getTokenExpirationDate(encodedToken) {
   const token = decode(encodedToken);
   if (!token.exp) { return null; }
@@ -122,6 +126,7 @@ export function isLoggedIn() {
 export function logout() {
   clearIdToken();
   clearProfile();
+  clearNonce();
 }
 
 export function getAndStoreParameters() {
