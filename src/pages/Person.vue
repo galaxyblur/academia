@@ -81,6 +81,7 @@ export default {
       loadingCounter: 0,
       Person: undefined,
       personToUpdate: undefined,
+      defaultParentGuardianToUpdate: '',
       strings,
     };
   },
@@ -111,41 +112,49 @@ export default {
   },
   methods: {
     chooseGuardianForEdit() {
-      const btns = [];
+      const items = [];
 
-      btns.push({
+      items.push({
         color: 'positive',
-        icon: 'fas fa-plus',
         label: 'Add New',
-        handler: () => {
-          this.personToUpdate = {
-            guardianOf: [this.Person],
-          };
-          this.showPersonUpdateModal();
-        },
+        value: '',
       });
 
       this.Person.guardians.forEach((pg) => {
         const name = pg.lastName ? `${pg.firstName} ${pg.lastName}` : pg.firstName;
 
-        btns.push({
+        items.push({
           label: name,
-          handler: () => {
-            this.personToUpdate = Object.assign({}, pg);
-            this.showPersonUpdateModal();
-          },
+          value: pg.id,
         });
       });
 
-      btns.push({
-        label: 'Cancel',
-      });
-
       this.$q.dialog({
-        title: 'Edit Parent/Guardians',
-        stackButtons: true,
-        buttons: btns,
-      });
+        title: 'Edit Parents/Guardians',
+        cancel: true,
+        ok: 'Continue',
+        options: {
+          type: 'radio',
+          model: '',
+          items,
+        },
+      }).then((item) => {
+        let pg;
+
+        if (item) {
+          [pg] = this.Person.guardians.filter(g => g.id === item);
+        }
+
+        if (pg) {
+          this.personToUpdate = Object.assign({}, pg);
+        } else {
+          this.personToUpdate = {
+            guardianOf: [this.Person],
+          };
+        }
+
+        this.showPersonUpdateModal();
+      }, () => {});
     },
     handleEditGuardians() {
       this.$refs.personPopover.hide();
