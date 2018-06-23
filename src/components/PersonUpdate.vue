@@ -248,32 +248,27 @@ export default {
       this.$q.dialog({
         title: 'Remove Person',
         message: 'Are you sure?',
-        buttons: [
-          'Cancel',
-          {
-            label: 'Remove',
-            handler: () => {
-              safeDeletePersonInContext.call(this, this.PersonMod)
-                .catch((err) => {
-                  this.$q.notify(err.message);
-                  this.isRemovePersonLoading = false;
-                })
-                .then((result) => {
-                  let msg = `Removed ${getPreferredName(this.PersonMod)}`;
+        cancel: true,
+        ok: 'Remove',
+      }).then(() => {
+        safeDeletePersonInContext.call(this, this.PersonMod)
+          .catch((err) => {
+            this.$q.notify(err.message);
+            this.isRemovePersonLoading = false;
+          })
+          .then((result) => {
+            let msg = `Removed ${getPreferredName(this.PersonMod)}`;
 
-                  if (result.guardiansRemovedCount > 0) {
-                    msg += ` and ${result.guardiansRemovedCount} guardian(s)`;
-                  }
+            if (result.guardiansRemovedCount > 0) {
+              msg += ` and ${result.guardiansRemovedCount} guardian(s)`;
+            }
 
-                  this.$q.notify(`${msg}.`);
-                  this.isRemovePersonLoading = false;
-                  this.hide();
-                  this.$emit('delete-person', this.PersonMod);
-                });
-            },
-          },
-        ],
-      });
+            this.$q.notify(`${msg}.`);
+            this.isRemovePersonLoading = false;
+            this.hide();
+            this.$emit('delete-person', this.PersonMod);
+          });
+      }, () => {});
     },
     save() {
       this.isSaveLoading = true;
