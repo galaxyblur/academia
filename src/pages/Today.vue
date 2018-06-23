@@ -1,6 +1,7 @@
 <template>
   <q-page padding>
     <h4 class="text-center q-ma-none">Classes</h4>
+
     <h5 v-if="today" id="today-subhead" class="text-center q-ma-none">
       <q-btn icon="fas fa-arrow-alt-circle-left" dense class="today-subhead-hidden" />
       <q-btn
@@ -31,6 +32,7 @@
     </q-card>
 
     <template v-if="today && today.classes.length > 0">
+
       <q-card v-if="!isSetToToday" class="q-mt-md text-center">
         <q-card-main>
           <p v-if="isEditingPreviousDateDisabled">Editing previous classes is currently locked.</p>
@@ -43,6 +45,7 @@
             unchecked-icon="fas fa-unlock" />
         </q-card-main>
       </q-card>
+
       <q-card
         v-for="(c, ic) in today.classes"
         :key="ic"
@@ -58,7 +61,9 @@
             {{ getClassAttendance(c).length }}
           </q-chip>
         </q-card-title>
+
         <q-list>
+
           <q-list-header>
             {{ getPersonsForClass(c).length }} {{ getSegmentDisplayName(c) }}
           </q-list-header>
@@ -81,6 +86,7 @@
                 :disable="!isAttendanceEditable" />
             </q-item-side>
           </q-item>
+
           <template v-if="personsUnknown.length > 0">
             <q-list-header>
               {{ personsUnknown.length }} Others
@@ -106,8 +112,20 @@
               </q-item-side>
             </q-item>
           </template>
+
         </q-list>
+
+        <div class="q-pa-sm text-center">
+          <q-btn
+            icon="fas fa-plus"
+            label="Add New Student"
+            text-color="positive"
+            size="md"
+            dense
+            @click="$refs.personUpdate.show()" />
+        </div>
       </q-card>
+
       <q-card id="today-persons-unknown" v-if="personsUnknown.length > 0" flat>
         <q-card-main>
           <persons-list
@@ -117,6 +135,7 @@
             :persons="personsUnknown" />
         </q-card-main>
       </q-card>
+
       <q-page-sticky v-if="classAttendanceNeedsSyncing" position="bottom-right" :offset="[10, 10]">
         <q-btn
           color="positive"
@@ -126,6 +145,7 @@
           <q-icon name="fas fa-cloud-upload-alt" />&nbsp;Save Attendance
         </q-btn>
       </q-page-sticky>
+
     </template>
 
     <template v-else-if="loadingCounter < 1">
@@ -137,11 +157,13 @@
       </q-card>
     </template>
 
+    <person-update
+      ref="personUpdate"
+      :person="{ newStudent: true }"
+      @create-person="handleUpdatePerson" />
+
   </q-page>
 </template>
-
-<style>
-</style>
 
 <script>
 import { date } from 'quasar';
@@ -176,6 +198,7 @@ import {
 } from '../lib/ClassHelper';
 
 import PersonsList from '../components/PersonsList';
+import PersonUpdate from '../components/PersonUpdate';
 
 import { getStrings } from '../lib/StringsHelper';
 
@@ -201,6 +224,7 @@ export default {
   name: 'today',
   components: {
     PersonsList,
+    PersonUpdate,
   },
   created() {
     this.$store.commit('app/setTitle', 'Today');
@@ -525,6 +549,14 @@ export default {
       });
 
       return personIds;
+    },
+    handleUpdatePerson(person) {
+      console.warn(person);
+      this.$apollo.queries.allPersons.refetch();
+      this.$q.dialog({
+        title: `New ${strings.Person} Added`,
+        message: `${getPreferredName(person)} was added to the group. Find them in the list to mark them as present for a class.`,
+      });
     },
   },
 };
