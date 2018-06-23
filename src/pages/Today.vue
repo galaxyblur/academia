@@ -1,6 +1,11 @@
 <template>
   <q-page padding>
-    <h4 class="text-center q-ma-none">Classes</h4>
+    <h4 class="text-center q-ma-none">
+      Classes
+      <q-chip v-if="today && today.classes.length > 0" small dense color="primary">
+        {{ today.classes.length }}
+      </q-chip>
+    </h4>
 
     <h5 v-if="today" id="today-subhead" class="text-center q-ma-none">
       <q-btn icon="fas fa-arrow-alt-circle-left" dense class="today-subhead-hidden" />
