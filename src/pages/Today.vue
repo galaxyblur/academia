@@ -8,22 +8,31 @@
     </h4>
 
     <h5 v-if="today" id="today-subhead" class="text-center q-ma-none">
-      <q-btn icon="fas fa-arrow-alt-circle-left" dense class="today-subhead-hidden" />
       <q-btn
-        icon="fas fa-chevron-circle-left"
+        icon="fas fa-arrow-alt-circle-left"
+        class="today-subhead-hidden"
+        size="sm"
+        dense />
+      <q-btn
+        icon="fas fa-chevron-left"
+        class="q-mx-sm"
         :class="{ todaySubheadHidden: false }"
         @click="goBackOneDay"
+        size="sm"
         dense />
       {{ today.displayDate }}
       <q-btn
-        icon="fas fa-chevron-circle-right"
+        icon="fas fa-chevron-right"
+        class="q-mx-sm"
         :class="{ 'today-subhead-hidden': isSetToToday }"
         @click="goForwardOneDay"
+        size="sm"
         dense />
       <q-btn
         icon="fas fa-arrow-alt-circle-right"
         :class="{ 'today-subhead-hidden': isSetToToday }"
         @click="goToToday"
+        size="sm"
         dense />
     </h5>
 
