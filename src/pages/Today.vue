@@ -40,14 +40,16 @@
       <template v-else>classes</template>
     </h5>
 
-    <q-card v-if="allPersonsBirthdays.length > 0" color="secondary" class="q-mt-md">
-      <q-card-main>
-        <q-icon name="fas fa-birthday-cake" />
-        {{ allPersonsBirthdays.length }}
-        birthday<template v-if="allPersonsBirthdays.length > 1">s</template> this week:
-        <em>{{ birthdayNames }}</em>
-      </q-card-main>
-    </q-card>
+    <q-alert
+      v-if="allPersonsBirthdays.length > 0 && isBirthdayAlertVisible && isSetToToday"
+      class="q-my-md"
+      color="secondary"
+      icon="fas fa-birthday-cake"
+      :actions="[{ label: 'Hide', handler: () => { isBirthdayAlertVisible = false } }]">
+      {{ allPersonsBirthdays.length }}
+      birthday<template v-if="allPersonsBirthdays.length > 1">s</template> this week:
+      <em>{{ birthdayNames }}</em>
+    </q-alert>
 
     <template v-if="today && today.classes.length > 0">
 
@@ -263,6 +265,8 @@ export default {
         };
       },
       result({ data }) {
+        this.allPersonsBirthdays = [];
+
         if (data.allPersons && data.allPersons.length > 0) {
           data.allPersons.forEach((p) => {
             const pDate = date.isValid(p.birthdate) ? new Date(p.birthdate) : undefined;
@@ -345,6 +349,7 @@ export default {
       strings,
       isSaveLoading: false,
       isEditingPreviousDateDisabled: true,
+      isBirthdayAlertVisible: true,
     };
   },
   computed: {
