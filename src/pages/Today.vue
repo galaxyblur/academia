@@ -252,6 +252,22 @@ export default {
   created() {
     this.$store.commit('app/setTitle', 'Today');
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.classAttendanceNeedsSyncing) {
+      this.$q.dialog({
+        title: 'Attendance Not Saved',
+        message: 'You have unsaved changes to class attendance. Do you want to save now?',
+        ok: 'Save',
+        cancel: 'Don\'t Save',
+      }).then(() => {
+        this.syncClassAttendance();
+      }, () => {
+        next();
+      });
+    } else {
+      next();
+    }
+  },
   apollo: {
     allPersons: {
       loadingKey: 'loadingCounter',
