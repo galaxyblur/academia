@@ -3,7 +3,7 @@
     <q-list-header v-if="listHeaderText">
       {{ listHeaderText }}
       <q-btn
-        v-if="handleListHeaderHelp"
+        v-if="listHeaderHelpText"
         icon="fas fa-question-circle"
         size="sm"
         dense
