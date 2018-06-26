@@ -10,6 +10,11 @@ export default [
         component: () => import('pages/Persons'),
       },
       {
+        name: 'PersonsNoBirthdate',
+        path: 'persons/no-birthdate',
+        component: () => import('pages/PersonsNoBirthdate'),
+      },
+      {
         name: 'Person',
         path: 'persons/:id',
         component: () => import('pages/Person'),
