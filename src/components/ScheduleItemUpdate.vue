@@ -96,6 +96,12 @@ import {
   typeClassPersonSegment,
 } from '../gql';
 
+import {
+  getSecondsSinceMidnight,
+  getNowRoundedToHour,
+  getTodayAtMidnight,
+} from '../lib/DateHelper';
+
 import { getStrings } from '../lib/StringsHelper';
 
 const strings = getStrings();
@@ -140,27 +146,6 @@ const removeScheduleItem = function removeScheduleItem(classObj) {
   });
 
   return mutation;
-};
-
-const getTodayAtMidnight = function getTodayAtMidnight() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return today;
-};
-
-const getNowRoundedToHour = function getNowRoundedToHour() {
-  const rightNow = new Date();
-  rightNow.setMinutes(0);
-  rightNow.setSeconds(0);
-  rightNow.setMilliseconds(0);
-  return rightNow;
-};
-
-const getSecondsSinceMidnight = function getSecondsSinceMidnight(d = new Date()) {
-  const today = getTodayAtMidnight();
-
-  const diff = parseInt(d.getTime() - today.getTime(), 10);
-  return parseInt(diff / 1000, 10);
 };
 
 export default {
