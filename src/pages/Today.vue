@@ -1,12 +1,5 @@
 <template>
   <q-page padding>
-    <h4 class="text-center q-ma-none">
-      Classes
-      <q-chip v-if="today && today.classes.length > 0" small dense color="primary">
-        {{ today.classes.length }}
-      </q-chip>
-    </h4>
-
     <h5 v-if="today" id="today-subhead" class="text-center q-ma-none">
       <q-btn
         icon="fas fa-arrow-alt-circle-left"
@@ -34,6 +27,17 @@
         @click="goToToday"
         size="sm"
         dense />
+      <br>
+      <q-checkbox
+        v-if="!isSetToToday"
+        v-model="isEditingPreviousDateDisabled"
+        @input="handleEditingToggle"
+        color="negative"
+        checked-icon="fas fa-lock"
+        unchecked-icon="fas fa-unlock" />
+      {{ today.classes.length }}
+      <template v-if="today.classes.length === 1">class</template>
+      <template v-else>classes</template>
     </h5>
 
     <q-card v-if="allPersonsBirthdays.length > 0" color="secondary" class="q-mt-md">
@@ -47,34 +51,35 @@
 
     <template v-if="today && today.classes.length > 0">
 
-      <q-card v-if="!isSetToToday" class="q-mt-md text-center">
-        <q-card-main>
-          <p v-if="isEditingPreviousDateDisabled">Editing previous classes is currently locked.</p>
-          <p v-else>
-            Editing previous classes is currently <strong class="text-negative">unlocked</strong>.
-          </p>
-          <q-toggle
-            v-model="isEditingPreviousDateDisabled"
-            checked-icon="fas fa-lock"
-            unchecked-icon="fas fa-unlock" />
-        </q-card-main>
-      </q-card>
 
-      <q-card
+      <q-collapsible
+        group="todayClasses"
         v-for="(c, ic) in today.classes"
         :key="ic"
-        :text-color="!isAttendanceEditable ? 'faded' : ''"
-        class="q-mt-md">
-        <q-card-title>
-          {{ c.name }}
-          <small>{{ getClassTimeDisplay(c.startsAt) }}-{{ getClassTimeDisplay(c.endsAt) }}</small>
-          <q-chip
-            small
-            :color="getClassAttendance(c).length > 0 ? 'primary' : 'faded'"
-            class="float-right">
-            {{ getClassAttendance(c).length }}
-          </q-chip>
-        </q-card-title>
+        :opened="isClassHappeningNowish(c)">
+
+        <template slot="header">
+          <q-item-main>
+            <q-item-tile
+              label
+              :text-color="!isAttendanceEditable ? 'faded' : ''">
+              {{ c.name }}
+            </q-item-tile>
+            <q-item-tile
+              sublabel
+              :text-color="!isAttendanceEditable ? 'faded' : ''">
+              {{ getClassTimeDisplay(c.startsAt) }}-{{ getClassTimeDisplay(c.endsAt) }}
+            </q-item-tile>
+          </q-item-main>
+          <q-item-side right>
+            <q-chip
+                  dense
+              :color="getClassAttendance(c).length > 0 ? 'primary' : 'faded'"
+              class="float-right">
+              {{ getClassAttendance(c).length }}
+            </q-chip>
+          </q-item-side>
+        </template>
 
         <q-list>
 
@@ -104,7 +109,9 @@
           <template v-if="personsUnknown.length > 0">
             <q-list-header>
               {{ personsUnknown.length }} Others
-              <small><a href="#" v-scroll-to="'#today-persons-unknown'">fix this &raquo;</a></small>
+              <small>
+                <router-link :to="{ name: 'PersonsNoBirthdate' }">fix this &raquo;</router-link>
+              </small>
             </q-list-header>
             <q-item
               v-for="(s, is) in getPersonsForClass(c, 'unknown')"
@@ -127,28 +134,27 @@
             </q-item>
           </template>
 
+          <q-item>
+            <q-btn
+              icon="fas fa-plus"
+              label="Add New Student"
+              text-color="positive"
+              size="md"
+              dense
+              @click="$refs.personUpdate.show()" />
+          </q-item>
+
         </q-list>
 
-        <div class="q-pa-sm text-center">
-          <q-btn
-            icon="fas fa-plus"
-            label="Add New Student"
-            text-color="positive"
-            size="md"
-            dense
-            @click="$refs.personUpdate.show()" />
-        </div>
-      </q-card>
+      </q-collapsible>
 
-      <q-card id="today-persons-unknown" v-if="personsUnknown.length > 0" flat>
-        <q-card-main>
-          <persons-list
-            :list-header-text="personsUnknown.length + ' students have no birthdate'"
-            list-header-help-text="Students need a birthdate to be tracked as a child or adult."
-            list-header-icon="fas fa-question-circle"
-            :persons="personsUnknown" />
-        </q-card-main>
-      </q-card>
+      <q-alert
+        class="q-my-md"
+        type="warning"
+        icon="fas fa-users"
+        :actions="[{ label: 'Fix This', handler: goToPersonsNoBirthdate }]">
+        {{ personsUnknown.length }} {{ strings.persons }} have no birthdate.
+      </q-alert>
 
       <q-page-sticky v-if="classAttendanceNeedsSyncing" position="bottom-right" :offset="[10, 10]">
         <q-btn
@@ -165,7 +171,7 @@
     <template v-else-if="loadingCounter < 1">
       <q-card class="q-mt-md">
         <q-card-main>
-          No classes scheduled today.
+          No classes found.
           <router-link :to="{ name: 'Schedule' }">Edit Schedule &raquo;</router-link>
         </q-card-main>
       </q-card>
@@ -214,6 +220,7 @@ import {
 import PersonsList from '../components/PersonsList';
 import PersonUpdate from '../components/PersonUpdate';
 
+import { getSecondsSinceMidnight } from '../lib/DateHelper';
 import { getStrings } from '../lib/StringsHelper';
 
 const strings = getStrings();
@@ -346,8 +353,8 @@ export default {
     },
     personsAdults() {
       return this.allPersons.filter((s) => {
-        let isAdult = false;
         const sDate = date.isValid(s.birthdate) ? new Date(s.birthdate) : undefined;
+        let isAdult = false;
 
         if (sDate) {
           isAdult = date.getDateDiff(sDate, minChildAge, 'days') < 0;
@@ -564,13 +571,32 @@ export default {
 
       return personIds;
     },
+    isClassHappeningNowish(classObj) {
+      const sec = getSecondsSinceMidnight();
+
+      return this.isSetToToday && sec < classObj.endsAt && sec >= (classObj.startsAt - 600);
+    },
+    goToPersonsNoBirthdate() {
+      this.$router.push({ name: 'PersonsNoBirthdate' });
+    },
     handleUpdatePerson(person) {
-      console.warn(person);
       this.$apollo.queries.allPersons.refetch();
       this.$q.dialog({
         title: `New ${strings.Person} Added`,
         message: `${getPreferredName(person)} was added to the group. Find them in the list to mark them as present for a class.`,
       });
+    },
+    handleEditingToggle() {
+      if (this.isEditingPreviousDateDisabled === false) {
+        this.$q.dialog({
+          title: 'Enable Editing',
+          message: 'You are viewing a previous day\'s classes. Are you sure you want to edit these classes?',
+          cancel: true,
+          ok: 'Enable',
+        }).then(() => {}, () => {
+          this.isEditingPreviousDateDisabled = true;
+        });
+      }
     },
   },
 };
