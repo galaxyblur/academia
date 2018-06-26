@@ -102,6 +102,8 @@ module.exports = function (ctx) {
         'QChip',
         'QPageSticky',
         'QToggle',
+        'QCollapsible',
+        'QAlert',
       ],
       directives: [
         'Ripple',
