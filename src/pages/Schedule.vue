@@ -31,6 +31,7 @@
               <q-item-side right icon="fas fa-angle-right"></q-item-side>
             </q-item>
           </template>
+          <q-item-separator :key="'separator' + id" />
         </template>
       </q-list>
     </div>

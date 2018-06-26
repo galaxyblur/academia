@@ -82,6 +82,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemSeparator',
         'QLayoutFooter',
         'QBtnGroup',
         'QTabs',
