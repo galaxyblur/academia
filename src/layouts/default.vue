@@ -1,5 +1,11 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="lHr LpR lFr">
+    <q-layout-drawer side="left" v-model="isLeftDrawerVisible">
+    </q-layout-drawer>
+
+    <q-layout-drawer side="right" v-model="isRightDrawerVisible">
+    </q-layout-drawer>
+
     <q-layout-header>
       <app-toolbar />
       <app-nav v-if="$q.theme === 'mat'" />
@@ -40,6 +46,8 @@ export default {
     return {
       userId: undefined,
       User: undefined,
+      isLeftDrawerVisible: true,
+      isRightDrawerVisible: true,
     };
   },
   mounted() {
