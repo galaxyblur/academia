@@ -1,5 +1,5 @@
 <template>
-  <q-list separator link>
+  <q-list separator link no-border>
     <q-list-header v-if="listHeaderText">
       {{ listHeaderText }}
       <q-btn

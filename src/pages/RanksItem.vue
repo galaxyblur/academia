@@ -1,7 +1,8 @@
 <template>
-  <q-page padding>
-    <div v-if="Rank">
-      <q-card>
+  <q-page>
+
+    <template v-if="Rank">
+      <q-card flat>
         <q-card-title>
           {{ Rank.name }}
           <q-icon slot="right" name="fas fa-ellipsis-v">
@@ -21,15 +22,14 @@
           </dl>
         </q-card-main>
       </q-card>
-      <q-card flat>
-        <q-card-main>
-          <template v-if="Rank.students.length > 0">
-            <persons-list :list-header-text="rankPersonsListHeaderText" :persons="Rank.students" />
-          </template>
-          <p v-else>No {{ strings.persons }} have this {{ strings.rank }}.</p>
-        </q-card-main>
+      <q-card v-if="Rank.students.length > 0" class="q-ma-md">
+        <persons-list :list-header-text="rankPersonsListHeaderText" :persons="Rank.students" />
       </q-card>
-    </div>
+      <h6 v-else class="text-center q-pa-sm">
+        No {{ strings.persons }} have this {{ strings.rank }}.
+      </h6>
+    </template>
+
     <ranks-item-update
       v-if="Rank"
       ref="ranksItemUpdate"
@@ -37,6 +37,7 @@
       :rank="Rank"
       @rank-deleted="handleRankDeleted"
       @rank-updated="handleRankUpdated" />
+
   </q-page>
 </template>
 

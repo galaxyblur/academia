@@ -1,6 +1,7 @@
 <template>
-  <q-page padding>
-    <h5 v-if="today" id="today-subhead" class="text-center q-ma-none">
+  <q-page>
+
+    <h5 v-if="today" id="today-subhead" class="text-center q-my-md">
       <q-btn
         icon="fas fa-arrow-alt-circle-left"
         class="today-subhead-hidden"
@@ -42,8 +43,9 @@
 
     <q-alert
       v-if="allPersonsBirthdays.length > 0 && isBirthdayAlertVisible && isSetToToday"
-      class="q-my-md"
-      color="secondary"
+      class="q-ma-md"
+      color="white"
+      text-color="dark"
       icon="fas fa-birthday-cake"
       :actions="[{ label: 'Hide', handler: () => { isBirthdayAlertVisible = false } }]">
       {{ allPersonsBirthdays.length }}
@@ -53,71 +55,44 @@
 
     <template v-if="today && today.classes.length > 0">
 
+      <q-card class="q-my-md q-mx-sm">
+        <q-collapsible
+          group="todayClasses"
+          v-for="(c, ic) in today.classes"
+          :key="ic"
+          :opened="isClassHappeningNowish(c)">
 
-      <q-collapsible
-        group="todayClasses"
-        v-for="(c, ic) in today.classes"
-        :key="ic"
-        :opened="isClassHappeningNowish(c)">
-
-        <template slot="header">
-          <q-item-main>
-            <q-item-tile
-              label
-              :text-color="!isAttendanceEditable ? 'faded' : ''">
-              {{ c.name }}
-            </q-item-tile>
-            <q-item-tile
-              sublabel
-              :text-color="!isAttendanceEditable ? 'faded' : ''">
-              {{ getClassTimeDisplay(c.startsAt) }}-{{ getClassTimeDisplay(c.endsAt) }}
-            </q-item-tile>
-          </q-item-main>
-          <q-item-side right>
-            <q-chip
-                  dense
-              :color="getClassAttendance(c).length > 0 ? 'primary' : 'faded'"
-              class="float-right">
-              {{ getClassAttendance(c).length }}
-            </q-chip>
-          </q-item-side>
-        </template>
-
-        <q-list>
-
-          <q-list-header>
-            {{ getPersonsForClass(c).length }} {{ getSegmentDisplayName(c) }}
-          </q-list-header>
-          <q-item
-            v-for="(s, is) in getPersonsForClass(c)"
-            :key="is + '-' + ic"
-            tag="label"
-            multiline>
+          <template slot="header">
             <q-item-main>
-              <q-item-tile label>
-                {{ getPreferredName(s) }}
-                <span v-if="getSecondaryName(s)"><small>{{ getSecondaryName(s) }}</small></span>
-                <i v-if="s.isMember" class="fa fa-certificate text-positive"></i>
+              <q-item-tile
+                label
+                :text-color="!isAttendanceEditable ? 'faded' : ''">
+                {{ c.name }}
+              </q-item-tile>
+              <q-item-tile
+                sublabel
+                :text-color="!isAttendanceEditable ? 'faded' : ''">
+                {{ getClassTimeDisplay(c.startsAt) }}-{{ getClassTimeDisplay(c.endsAt) }}
               </q-item-tile>
             </q-item-main>
             <q-item-side right>
-              <q-checkbox
-                v-model="classAttendance"
-                :val="s.attendanceKey"
-                :disable="!isAttendanceEditable" />
+              <q-chip
+                dense
+                :color="getClassAttendance(c).length > 0 ? 'primary' : 'faded'"
+                class="float-right">
+                {{ getClassAttendance(c).length }}
+              </q-chip>
             </q-item-side>
-          </q-item>
+          </template>
 
-          <template v-if="personsUnknown.length > 0">
+          <q-list no-border>
+
             <q-list-header>
-              {{ personsUnknown.length }} Others
-              <small>
-                <router-link :to="{ name: 'PersonsNoBirthdate' }">fix this &raquo;</router-link>
-              </small>
+              {{ getPersonsForClass(c).length }} {{ getSegmentDisplayName(c) }}
             </q-list-header>
             <q-item
-              v-for="(s, is) in getPersonsForClass(c, 'unknown')"
-              :key="'unknown-' + is + '-' + ic"
+              v-for="(s, is) in getPersonsForClass(c)"
+              :key="is + '-' + ic"
               tag="label"
               multiline>
               <q-item-main>
@@ -134,24 +109,53 @@
                   :disable="!isAttendanceEditable" />
               </q-item-side>
             </q-item>
-          </template>
 
-          <q-item>
-            <q-btn
-              icon="fas fa-plus"
-              label="Add New Student"
-              text-color="positive"
-              size="md"
-              dense
-              @click="$refs.personUpdate.show()" />
-          </q-item>
+            <template v-if="personsUnknown.length > 0">
+              <q-list-header>
+                {{ personsUnknown.length }} Others
+                <small>
+                  <router-link :to="{ name: 'PersonsNoBirthdate' }">fix this &raquo;</router-link>
+                </small>
+              </q-list-header>
+              <q-item
+                v-for="(s, is) in getPersonsForClass(c, 'unknown')"
+                :key="'unknown-' + is + '-' + ic"
+                tag="label"
+                multiline>
+                <q-item-main>
+                  <q-item-tile label>
+                    {{ getPreferredName(s) }}
+                    <span v-if="getSecondaryName(s)"><small>{{ getSecondaryName(s) }}</small></span>
+                    <i v-if="s.isMember" class="fa fa-certificate text-positive"></i>
+                  </q-item-tile>
+                </q-item-main>
+                <q-item-side right>
+                  <q-checkbox
+                    v-model="classAttendance"
+                    :val="s.attendanceKey"
+                    :disable="!isAttendanceEditable" />
+                </q-item-side>
+              </q-item>
+            </template>
 
-        </q-list>
+            <q-item>
+              <q-btn
+                icon="fas fa-plus"
+                label="Add New Student"
+                text-color="positive"
+                size="md"
+                dense
+                @click="$refs.personUpdate.show()" />
+            </q-item>
 
-      </q-collapsible>
+          </q-list>
+
+        </q-collapsible>
+      </q-card>
 
       <q-alert
-        class="q-my-md"
+        v-if="isSetToToday && personsUnknown.length > 0"
+        class="q-ma-md"
         type="warning"
         icon="fas fa-users"
         :actions="[{ label: 'Fix This', handler: goToPersonsNoBirthdate }]">
@@ -170,12 +174,10 @@
 
     </template>
 
-    <template v-else-if="loadingCounter < 1">
-      <q-card class="q-mt-md">
-        <q-card-main>
-          No classes found.
-          <router-link :to="{ name: 'Schedule' }">Edit Schedule &raquo;</router-link>
-        </q-card-main>
+    <template v-else-if="today && loadingCounter < 1">
+      <q-card class="q-my-md q-mx-sm q-pa-md">
+        No classes found.
+        <router-link :to="{ name: 'Schedule' }">Edit Schedule &raquo;</router-link>
       </q-card>
     </template>
 
@@ -333,6 +335,11 @@ export default {
         return data.DayOfWeek;
       },
       result({ data }) {
+        this.classAttendance = [];
+        this.classAttendanceSynced = [];
+        this.classAttendanceByClass = [];
+        this.classAttendanceNeedsSyncing = false;
+
         if (data.DayOfWeek && data.DayOfWeek.classes && data.DayOfWeek.classes.length > 0) {
           data.DayOfWeek.classes.forEach((c) => {
             if (c.attendances && c.attendances.length > 0) {
@@ -404,7 +411,7 @@ export default {
 
       if (this.DayOfWeek) {
         today = Object.assign({
-          displayDate: date.formatDate(this.dateToday.getTime(), 'dddd, MMMM D YYYY'),
+          displayDate: date.formatDate(this.dateToday.getTime(), 'dddd, MMMM D, YYYY'),
         }, this.DayOfWeek);
       }
 

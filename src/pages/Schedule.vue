@@ -1,14 +1,14 @@
 <template>
-  <q-page padding>
-    <div class="row justify-center q-mb-md">
-      <div>
-        <q-btn color="primary" @click="$refs.scheduleItemUpdate.show()">
-          <q-icon name="fas fa-plus" />&nbsp;Add Class
-        </q-btn>
-      </div>
+  <q-page>
+
+    <div class="text-center q-py-md">
+      <q-btn color="primary" @click="$refs.scheduleItemUpdate.show()">
+        <q-icon name="fas fa-plus" />&nbsp;Add Class
+      </q-btn>
     </div>
-    <div v-if="days.length > 0">
-      <q-list link>
+
+    <template v-if="days.length > 0">
+      <q-list link no-border>
         <template v-for="(d, id) in days">
           <q-list-header :key="id">
             {{ d.name }}
@@ -34,13 +34,16 @@
           <q-item-separator :key="'separator' + id" />
         </template>
       </q-list>
-    </div>
+    </template>
+
     <div v-else-if="loadingCounter < 1" class="text-center q-ma-md">No schedule found.</div>
+
     <schedule-item-update
       ref="scheduleItemUpdate"
       title="Add Class"
       @schedule-item-deleted="handleUpdateScheduleItem"
       @schedule-item-updated="handleUpdateScheduleItem" />
+
   </q-page>
 </template>
 

@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     isStudent() {
-      return isStudent(this.person);
+      return this.person ? isStudent(this.person) : undefined;
     },
   },
   methods: {

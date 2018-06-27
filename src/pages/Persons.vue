@@ -1,17 +1,18 @@
 <template>
-  <q-page padding>
-    <div class="row justify-center q-mb-md">
-      <div>
-        <q-btn color="primary" @click="$refs.personUpdate.show()">
-          <q-icon name="fas fa-plus" />&nbsp;Add {{ strings.Person }}
-        </q-btn>
-      </div>
+  <q-page>
+
+    <div class="text-center q-py-md">
+      <q-btn color="primary" @click="$refs.personUpdate.show()">
+        <q-icon name="fas fa-plus" />&nbsp;Add {{ strings.Person }}
+      </q-btn>
     </div>
-    <div v-if="allPersons.length > 0">
+
+    <template v-if="allPersons.length > 0">
       <persons-list
         :persons="allPersons"
         :list-header-text="allPersons.length + ' ' + strings.persons" />
-    </div>
+    </template>
+
     <div v-else-if="loadingCounter < 1" class="text-center q-ma-md">
       No {{ strings.persons }} found.
     </div>
@@ -22,6 +23,7 @@
       @create-person="handleUpdatePerson"
       @update-person="handleUpdatePerson"
       @delete-person="handleUpdatePerson" />
+
   </q-page>
 </template>
 

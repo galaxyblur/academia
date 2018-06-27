@@ -1,6 +1,7 @@
 <template>
-  <q-page padding>
-    <div v-if="allPersons.length > 0">
+  <q-page>
+
+    <template v-if="allPersons.length > 0">
       <q-list separator link>
         <q-item
           v-for="(p, $ip) in allPersons"
@@ -19,10 +20,12 @@
           <q-item-side right icon="fas fa-angle-right"></q-item-side>
         </q-item>
       </q-list>
-    </div>
+    </template>
+
     <div v-else-if="loadingCounter < 1" class="text-center q-ma-md">
       No parents/guardians found.
     </div>
+
   </q-page>
 </template>
 

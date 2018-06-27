@@ -1,13 +1,13 @@
 <template>
-  <q-page padding>
-    <div class="row justify-center generic-margin">
-      <div>
-        <q-btn color="primary" @click="handleAddCord" :disabled="loadingCounter > 0">
-          <q-icon name="fas fa-plus" />&nbsp;Add {{ strings.Rank }}
-        </q-btn>
-      </div>
+  <q-page>
+
+    <div class="text-center q-my-md">
+      <q-btn color="primary" @click="handleAddCord" :disabled="loadingCounter > 0">
+        <q-icon name="fas fa-plus" />&nbsp;Add {{ strings.Rank }}
+      </q-btn>
     </div>
-    <q-list v-if="allRanks.length > 0" link separator>
+
+    <q-list v-if="allRanks.length > 0" link separator no-border>
       <q-item
         v-for="(r, ri) in allRanks"
         :key="ri"
@@ -24,13 +24,19 @@
         <q-item-side right icon="fas fa-angle-right" />
       </q-item>
     </q-list>
-    <div v-else-if="loadingCounter < 1">No {{ strings.ranks }} found.</div>
+
+    <div v-else-if="loadingCounter < 1" class="text-center q-my-md">
+      No {{ strings.ranks }} found.
+    </div>
+
     <ranks-item-update
       ref="ranksItemUpdate"
       :title="'Add ' + strings.Rank"
       @rank-deleted="handleUpdateRank"
       @rank-updated="handleUpdateRank" />
+
     <rank-colors-update ref="rankColorsUpdate" @colors-update="handleUpdateRankColors" />
+
   </q-page>
 </template>
 

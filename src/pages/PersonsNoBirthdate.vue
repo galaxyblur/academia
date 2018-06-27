@@ -1,11 +1,12 @@
 <template>
-  <q-page padding>
-    <div v-if="allPersons.length > 0">
+  <q-page>
+    <template v-if="allPersons.length > 0">
       <persons-list
         :persons="personsUnknown"
         list-header-help-text="Students need a birthdate to be tracked as a child or adult."
         :list-header-text="personsUnknown.length + ' ' + strings.persons + ' with no birthdate'" />
-    </div>
+    </template>
+
     <div v-else-if="loadingCounter < 1" class="text-center q-ma-md">
       No {{ strings.persons }} found.
     </div>
@@ -16,6 +17,7 @@
       @create-person="handleUpdatePerson"
       @update-person="handleUpdatePerson"
       @delete-person="handleUpdatePerson" />
+
   </q-page>
 </template>
 

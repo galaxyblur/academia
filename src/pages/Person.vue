@@ -1,6 +1,6 @@
 <template>
-  <q-page padding>
-    <q-card v-if="Person">
+  <q-page>
+    <q-card v-if="Person" flat>
       <q-card-title>
         {{ displayName }}
         <div v-if="Person.isMember" slot="right" class="row items-center">
@@ -43,6 +43,7 @@
       @create-person="handleUpdatePerson"
       @update-person="handleUpdatePerson"
       @delete-person="handleDeletePerson" />
+
   </q-page>
 </template>
 
@@ -104,10 +105,10 @@ export default {
       return title;
     },
     isStudent() {
-      return isStudent(this.Person);
+      return this.Person ? isStudent(this.Person) : undefined;
     },
     isGuardian() {
-      return isGuardian(this.Person);
+      return this.Person ? isGuardian(this.Person) : undefined;
     },
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <q-list link separator>
+    <q-list link separator no-border>
       <q-item v-for="(i, ii) in items" :key="ii" :to="{ name: i.routeName }" tag="label" multiline>
         <q-item-side :icon="i.icon" />
         <q-item-main>

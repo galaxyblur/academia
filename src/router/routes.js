@@ -15,14 +15,14 @@ export default [
         component: () => import('pages/PersonsNoBirthdate'),
       },
       {
-        name: 'Person',
-        path: 'persons/:id',
-        component: () => import('pages/Person'),
-      },
-      {
         name: 'PersonGuardians',
         path: 'persons/guardians',
         component: () => import('pages/PersonGuardians'),
+      },
+      {
+        name: 'Person',
+        path: 'persons/:id',
+        component: () => import('pages/Person'),
       },
       {
         name: 'PersonGuardian',
