@@ -359,10 +359,11 @@ export const allRanks = gql`
           }
         }
       },
-      orderBy: name_ASC
+      orderBy: index_ASC
     ) {
       id,
       name,
+      index,
       colors {
         id,
         weight,
@@ -387,6 +388,7 @@ export const RankById = gql`
     Rank(id: $id) {
       id,
       name,
+      index,
       colors {
         id,
         weight,
@@ -458,14 +460,17 @@ export const allRankColors = gql`
 export const updateRank = gql`
   mutation (
     $id: ID!,
-    $name: String!
+    $name: String!,
+    $index: Float
   ) {
     updateRank(
       id: $id,
       name: $name,
+      index: $index
     ) {
       id,
       name,
+      index,
       colors {
         id,
         weight
@@ -485,6 +490,7 @@ export const createRank = gql`
     ) {
       id,
       name,
+      index,
       colors {
         id,
         weight
@@ -502,6 +508,7 @@ export const deleteRank = gql`
     ) {
       id,
       name,
+      index,
       colors {
         id,
         weight
