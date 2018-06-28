@@ -2,9 +2,11 @@
   <q-page>
 
     <div class="text-center q-py-md">
-      <q-btn color="primary" @click="$refs.scheduleItemUpdate.show()">
-        <q-icon name="fas fa-plus" />&nbsp;Add Class
-      </q-btn>
+      <q-btn
+        color="primary"
+        label="Add Class"
+        icon="fas fa-plus"
+        @click="$refs.scheduleItemUpdate.show()" />
     </div>
 
     <template v-if="days.length > 0">
