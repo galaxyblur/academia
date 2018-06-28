@@ -2,9 +2,11 @@
   <q-page>
 
     <div class="text-center q-py-md">
-      <q-btn color="primary" @click="$refs.personUpdate.show()">
-        <q-icon name="fas fa-plus" />&nbsp;Add {{ strings.Person }}
-      </q-btn>
+      <q-btn
+        color="primary"
+        :label="'Add ' + strings.Person"
+        icon="fas fa-plus"
+        @click="$refs.personUpdate.show()" />
     </div>
 
     <template v-if="allPersons.length > 0">
