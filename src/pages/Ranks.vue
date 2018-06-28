@@ -36,7 +36,7 @@
           separator>
           <q-item-main>
             <q-item-tile label>
-              {{ r.name }} {{ r.index }}
+              {{ r.name }}
               <q-chip v-if="r.students.length > 0" dense>{{ r.students.length }}</q-chip>
             </q-item-tile>
             <q-item-tile sublabel><rank-display v-bind="r" /></q-item-tile>
