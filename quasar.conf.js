@@ -14,6 +14,7 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'apollo',
+      'v-calendar',
       'vuelidate',
       'vue-scrollto',
     ],
@@ -114,6 +115,7 @@ module.exports = function (ctx) {
         'Dialog',
         'Loading',
         'Notify',
+        'Screen',
       ],
       iconSet: 'fontawesome',
       // i18n: 'de' // Quasar language

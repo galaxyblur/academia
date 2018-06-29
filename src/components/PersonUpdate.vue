@@ -68,30 +68,26 @@
           :error="$v.PersonMod.emailAddress.$error">
           <q-input float-label="Email address" type="email" v-model="PersonMod.emailAddress" />
         </q-field>
-        <q-field
+        <person-date-picker
           v-if="isStudent"
-          class="q-py-sm"
-          error-label="invalid birthdate"
-          :error="$v.PersonMod.birthdate.$error">
-          <q-datetime float-label="Birthdate" type="date" v-model="PersonMod.birthdate" />
-        </q-field>
-        <q-field
+          label="Birthdate"
+          :person-date="PersonMod.birthdate"
+          @change="(d) => { PersonMod.birthdate = d }"
+           />
+        <person-date-picker
           v-if="isStudent"
-          class="q-py-sm"
-          error-label="error"
-          :error="$v.PersonMod.startedExperienceAt.$error"
-          :helper="'When did this ' + strings.person + ' start ' + strings.art + '?'">
-          <q-datetime
-            float-label="Start date"
-            type="date"
-            v-model="PersonMod.startedExperienceAt" />
-        </q-field>
+          label="Start date"
+          :person-date="PersonMod.startedExperienceAt"
+          :helper-text="'When did this ' + strings.person + ' start ' + strings.art + '?'"
+          @change="(d) => { PersonMod.startedExperienceAt = d }"
+           />
       </div>
     </q-modal-layout>
   </q-modal>
 </template>
 
 <script>
+import { date } from 'quasar';
 import {
   email,
   maxLength,
@@ -114,6 +110,7 @@ import {
   PersonDefaults,
 } from '../lib/PersonHelper';
 
+import PersonDatePicker from './PersonDatePicker';
 import RankDisplay from './RankDisplay';
 import { getStrings } from '../lib/StringsHelper';
 
@@ -122,6 +119,7 @@ const strings = getStrings();
 export default {
   name: 'person-update',
   components: {
+    PersonDatePicker,
     RankDisplay,
   },
   apollo: {
@@ -308,6 +306,9 @@ export default {
         this.isSaveLoading = false;
         this.$q.notify(error.message);
       });
+    },
+    getDateFormatted(d) {
+      return date.formatDate(d, 'YYYY/MM/DD');
     },
   },
   validations: {
