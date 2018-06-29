@@ -27,7 +27,7 @@ export const PersonDefaults = {
 
 export const getMinChildAge = function getMinChildAge() {
   const d = new Date();
-  d.setFullYear(d.getFullYear() - 13);
+  d.setFullYear(d.getFullYear() - 15);
 
   return d;
 };
