@@ -15,8 +15,6 @@ Vue.config.productionTip = false
 
 
 
-import 'quasar-extras/roboto-font'
-
 import 'quasar-extras/fontawesome'
 
 
@@ -54,6 +52,9 @@ plugins.push(pluginAxios)
 import pluginApollo from 'src/plugins/apollo'
 plugins.push(pluginApollo)
 
+import pluginVcalendar from 'src/plugins/v-calendar'
+plugins.push(pluginVcalendar)
+
 import pluginVuelidate from 'src/plugins/vuelidate'
 plugins.push(pluginVuelidate)
 
@@ -65,14 +66,6 @@ plugins.forEach(plugin => plugin({ app, router, store, Vue }))
 
 
 
-
-import FastClick from 'fastclick'
-// Needed only for iOS PWAs
-if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream && window.navigator.standalone) {
-  document.addEventListener('DOMContentLoaded', () => {
-    FastClick.attach(document.body)
-  }, false)
-}
 
 
 

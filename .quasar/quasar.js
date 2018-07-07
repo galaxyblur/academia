@@ -12,6 +12,6 @@ import iconSet from 'quasar-framework/icons/fontawesome'
 
 
 import Vue from 'vue'
-import Quasar, {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QLayoutFooter,QBtnGroup,QTabs,QRouteTab,QCard,QCardMain,QCardTitle,QModal,QModalLayout,QField,QInput,QOptionGroup,QDatetime,QItemTile,QCheckbox,QSelect,QPopover,QChip,Ripple,Dialog,Loading,Notify} from 'quasar'
+import Quasar, {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QItemSeparator,QLayoutFooter,QBtnGroup,QTabs,QRouteTab,QCard,QCardMain,QCardTitle,QModal,QModalLayout,QField,QInput,QOptionGroup,QDatetime,QItemTile,QCheckbox,QSelect,QPopover,QChip,QPageSticky,QToggle,QCollapsible,QAlert,Ripple,Dialog,Loading,Notify,Screen} from 'quasar'
 
-Vue.use(Quasar, { cfg: {},iconSet: iconSet,components: {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QLayoutFooter,QBtnGroup,QTabs,QRouteTab,QCard,QCardMain,QCardTitle,QModal,QModalLayout,QField,QInput,QOptionGroup,QDatetime,QItemTile,QCheckbox,QSelect,QPopover,QChip},directives: {Ripple},plugins: {Dialog,Loading,Notify} })
+Vue.use(Quasar, { cfg: {},iconSet: iconSet,components: {QLayout,QLayoutHeader,QLayoutDrawer,QPageContainer,QPage,QToolbar,QToolbarTitle,QBtn,QIcon,QList,QListHeader,QItem,QItemMain,QItemSide,QItemSeparator,QLayoutFooter,QBtnGroup,QTabs,QRouteTab,QCard,QCardMain,QCardTitle,QModal,QModalLayout,QField,QInput,QOptionGroup,QDatetime,QItemTile,QCheckbox,QSelect,QPopover,QChip,QPageSticky,QToggle,QCollapsible,QAlert},directives: {Ripple},plugins: {Dialog,Loading,Notify,Screen} })
