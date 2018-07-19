@@ -56,101 +56,16 @@
     <template v-if="today && today.classes.length > 0">
 
       <q-card class="q-my-md q-mx-sm">
-        <q-collapsible
-          group="todayClasses"
-          v-for="(c, ic) in today.classes"
-          :key="ic"
-          :opened="isClassHappeningNowish(c)">
-
-          <template slot="header">
-            <q-item-main>
-              <q-item-tile
-                label
-                :text-color="!isAttendanceEditable ? 'faded' : ''">
-                {{ c.name }}
-              </q-item-tile>
-              <q-item-tile
-                sublabel
-                :text-color="!isAttendanceEditable ? 'faded' : ''">
-                {{ getClassTimeDisplay(c.startsAt) }}-{{ getClassTimeDisplay(c.endsAt) }}
-              </q-item-tile>
-            </q-item-main>
-            <q-item-side right>
-              <q-chip
-                dense
-                :color="getClassAttendance(c).length > 0 ? 'primary' : 'faded'"
-                class="float-right">
-                {{ getClassAttendance(c).length }}
-              </q-chip>
-            </q-item-side>
-          </template>
-
-          <q-list no-border>
-
-            <q-list-header>
-              {{ getPersonsForClass(c).length }} {{ getSegmentDisplayName(c) }}
-            </q-list-header>
-            <q-item
-              v-for="(s, is) in getPersonsForClass(c)"
-              :key="is + '-' + ic"
-              tag="label"
-              multiline>
-              <q-item-main>
-                <q-item-tile label>
-                  {{ getPreferredName(s) }}
-                  <span v-if="getSecondaryName(s)"><small>{{ getSecondaryName(s) }}</small></span>
-                  <i v-if="s.isMember" class="fa fa-certificate text-positive"></i>
-                </q-item-tile>
-              </q-item-main>
-              <q-item-side right>
-                <q-checkbox
-                  v-model="classAttendance"
-                  :val="s.attendanceKey"
-                  :disable="!isAttendanceEditable" />
-              </q-item-side>
-            </q-item>
-
-            <template v-if="personsUnknown.length > 0">
-              <q-list-header>
-                {{ personsUnknown.length }} Others
-                <small>
-                  <router-link :to="{ name: 'PersonsNoBirthdate' }">fix this &raquo;</router-link>
-                </small>
-              </q-list-header>
-              <q-item
-                v-for="(s, is) in getPersonsForClass(c, 'unknown')"
-                :key="'unknown-' + is + '-' + ic"
-                tag="label"
-                multiline>
-                <q-item-main>
-                  <q-item-tile label>
-                    {{ getPreferredName(s) }}
-                    <span v-if="getSecondaryName(s)"><small>{{ getSecondaryName(s) }}</small></span>
-                    <i v-if="s.isMember" class="fa fa-certificate text-positive"></i>
-                  </q-item-tile>
-                </q-item-main>
-                <q-item-side right>
-                  <q-checkbox
-                    v-model="classAttendance"
-                    :val="s.attendanceKey"
-                    :disable="!isAttendanceEditable" />
-                </q-item-side>
-              </q-item>
-            </template>
-
-            <q-item>
-              <q-btn
-                icon="fas fa-plus"
-                label="Add New Student"
-                text-color="positive"
-                size="md"
-                dense
-                @click="$refs.personUpdate.show()" />
-            </q-item>
-
-          </q-list>
-
-        </q-collapsible>
+        <schedule-item-attendance-list
+          v-for="c in today.classes"
+          :key="c.id"
+          :class-obj="c"
+          :class-attendance="classAttendances[c.id]"
+          @update:class-attendance="handleClassAttendanceUpdated(c.id, $event)"
+          :is-attendance-editable="isAttendanceEditable"
+          :persons="getPersonsForClass(c)"
+          :persons-unknown="getPersonsForClass(c, 'unknown')"
+        />
       </q-card>
 
       <q-alert
@@ -162,11 +77,12 @@
         {{ personsUnknown.length }} {{ strings.persons }} have no birthdate.
       </q-alert>
 
-      <q-page-sticky v-if="classAttendanceNeedsSyncing" position="bottom-right" :offset="[10, 10]">
+      <q-page-sticky
+        v-if="classAttendancesNeedSyncing" position="bottom-right" :offset="[10, 10]">
         <q-btn
           color="positive"
           class="shadow-5 animate-bounce"
-          @click="syncClassAttendance"
+          @click="syncAllClassAttendance"
           :loading="isSaveLoading">
           <q-icon name="fas fa-cloud-upload-alt" />&nbsp;Save Attendance
         </q-btn>
@@ -194,10 +110,8 @@ import { date } from 'quasar';
 
 import {
   difference,
-  forIn,
   map,
-  pullAll,
-  uniq,
+  cloneDeep,
 } from 'lodash';
 
 import {
@@ -223,6 +137,7 @@ import {
 
 import PersonsList from '../components/PersonsList';
 import PersonUpdate from '../components/PersonUpdate';
+import ScheduleItemAttendanceList from '../components/ScheduleItemAttendanceList';
 
 import { getSecondsSinceMidnight } from '../lib/DateHelper';
 import { getStrings } from '../lib/StringsHelper';
@@ -250,19 +165,20 @@ export default {
   components: {
     PersonsList,
     PersonUpdate,
+    ScheduleItemAttendanceList,
   },
   created() {
     this.$store.commit('app/setTitle', 'Today');
   },
   beforeRouteLeave(to, from, next) {
-    if (this.classAttendanceNeedsSyncing) {
+    if (this.classAttendancesNeedSyncing) {
       this.$q.dialog({
         title: 'Attendance Not Saved',
         message: 'You have unsaved changes to class attendance. Do you want to save now?',
         ok: 'Save',
         cancel: 'Don\'t Save',
       }).then(() => {
-        this.syncClassAttendance();
+        this.syncAllClassAttendance();
       }, () => {
         next();
       });
@@ -331,27 +247,26 @@ export default {
       skip() {
         return !isLoggedIn() || !this.$store.getters['user/groupId'];
       },
-      update(data) {
-        return data.DayOfWeek;
-      },
       result({ data }) {
-        this.classAttendance = [];
-        this.classAttendanceSynced = [];
-        this.classAttendanceByClass = [];
-        this.classAttendanceNeedsSyncing = false;
+        this.classAttendances = {};
+        this.classAttendancesUnsynced = {};
 
         if (data.DayOfWeek && data.DayOfWeek.classes && data.DayOfWeek.classes.length > 0) {
           data.DayOfWeek.classes.forEach((c) => {
+            this.classAttendances[c.id] = [];
+            this.classAttendancesUnsynced[c.id] = [];
+
             if (c.attendances && c.attendances.length > 0) {
-              c.attendances.forEach((ca) => {
-                if (ca.personsInAttendance && ca.personsInAttendance.length > 0) {
-                  ca.personsInAttendance.forEach((p) => {
-                    const key = getAttendanceKey(c, ca, p);
-                    this.classAttendance.push(key);
-                    this.classAttendanceSynced.push(key);
-                  });
-                }
-              });
+              // Only use the first attendance -- variables above should have limited it anyway
+              const [ca] = c.attendances;
+
+              if (ca.personsInAttendance && ca.personsInAttendance.length > 0) {
+                ca.personsInAttendance.forEach((p) => {
+                  const key = getAttendanceKey(c, ca, p);
+                  this.classAttendances[c.id].push(key);
+                  this.classAttendancesUnsynced[c.id].push(key);
+                });
+              }
             }
           });
         }
@@ -363,10 +278,9 @@ export default {
       dateToday: new Date(),
       allPersons: [],
       allPersonsBirthdays: [],
-      classAttendance: [],
-      classAttendanceSynced: [],
-      classAttendanceByClass: {},
-      classAttendanceNeedsSyncing: false,
+      classAttendances: {},
+      classAttendancesUnsynced: {},
+      classAttendancesNeedSyncing: false,
       DayOfWeek: undefined,
       loadingCounter: 0,
       strings,
@@ -431,13 +345,6 @@ export default {
     },
   },
   watch: {
-    classAttendance() {
-      const attendancesUnsynced = difference(this.classAttendance, this.classAttendanceSynced);
-      const attendancesRemoved = difference(this.classAttendanceSynced, this.classAttendance);
-
-      this.classAttendanceNeedsSyncing = attendancesUnsynced.length > 0
-        || attendancesRemoved.length > 0;
-    },
     loadingCounter(val) {
       if (val > 0) {
         this.$q.loading.show();
@@ -467,66 +374,93 @@ export default {
     goToToday() {
       this.dateToday = new Date();
     },
-    syncClassAttendance() {
-      this.isSaveLoading = true;
+    getAttendancesAddedForClass(classId) {
+      const attendance = this.classAttendances[classId];
+      const attendanceUnsynced = this.classAttendancesUnsynced[classId];
+
+      return difference(attendanceUnsynced, attendance);
+    },
+    getAttendancesRemovedForClass(classId) {
+      const attendance = this.classAttendances[classId];
+      const attendanceUnsynced = this.classAttendancesUnsynced[classId];
+
+      return difference(attendance, attendanceUnsynced);
+    },
+    handleClassAttendanceUpdated(classId, attendanceUpdated) {
+      this.classAttendancesUnsynced[classId] = attendanceUpdated;
+
+      let needsSyncing = false;
+
+      this.DayOfWeek.classes.forEach((c) => {
+        const attendancesAdded = this.getAttendancesAddedForClass(c.id);
+        const attendancesRemoved = this.getAttendancesRemovedForClass(c.id);
+
+        console.warn('attendancesAdded', c.id, attendancesAdded);
+        console.warn('attendancesRemoved', c.id, attendancesRemoved);
+
+        needsSyncing = needsSyncing || attendancesAdded.length > 0 || attendancesRemoved.length > 0;
+      });
+
+      this.classAttendancesNeedSyncing = needsSyncing;
+    },
+    syncAttendanceForClass(classId) {
       const mutations = [];
-      const attendancesUnsynced = difference(this.classAttendance, this.classAttendanceSynced);
-      const attendancesRemoved = difference(this.classAttendanceSynced, this.classAttendance);
-      let newClassAttendancePersons;
+      const attendance = this.classAttendances[classId];
+      const isClassAttendanceIsNew = !attendance || attendance.length < 1;
 
-      this.loadingCounter += 1;
+      const attendancesAdded = this.getAttendancesAddedForClass(classId);
 
-      attendancesUnsynced.forEach((key) => {
-        const record = unpackAttendanceKey(key);
-        const classObj = this.DayOfWeek.classes.filter(c => c.id === record.classId)[0];
+      if (isClassAttendanceIsNew) {
+        const mutation = createClassAttendanceWith.call(this, {
+          classOccurredAt: new Date(),
+          classId,
+          attendancesAdded,
+        });
 
-        if (classObj) {
-          const isClassAttendanceIsNew = !classObj.attendances || classObj.attendances.length < 1;
+        mutations.push(mutation);
+      } else {
+        attendancesAdded.forEach((key) => {
+          const record = unpackAttendanceKey(key);
 
-          if (isClassAttendanceIsNew) {
-            newClassAttendancePersons = newClassAttendancePersons || {};
-            newClassAttendancePersons[classObj.id] = newClassAttendancePersons[classObj.id] || [];
-            newClassAttendancePersons[classObj.id].push(record.personId);
-          } else {
-            const mut = addToClassAttendancePersonsWith.call(this, {
+          if (record.classId === classId) {
+            const mutation = addToClassAttendancePersonsWith.call(this, {
               classAttendancesClassAttendanceId: record.classAttendanceId,
               personsInAttendancePersonId: record.personId,
             });
 
-            mutations.push(mut);
+            mutations.push(mutation);
           }
-        }
-      });
+        });
+      }
+
+      const attendancesRemoved = this.getAttendancesRemovedForClass(classId);
 
       attendancesRemoved.forEach((key) => {
         const record = unpackAttendanceKey(key);
-        const classObj = this.DayOfWeek.classes.filter(c => c.id === record.classId)[0];
 
-        if (classObj) {
-          const mut = removeFromClassAttendanceWith.call(this, {
-            classAttendancesClassAttendanceId: record.classAttendanceId,
-            personsInAttendancePersonId: record.personId,
-          });
+        const mutation = removeFromClassAttendanceWith.call(this, {
+          classAttendancesClassAttendanceId: record.classAttendanceId,
+          personsInAttendancePersonId: record.personId,
+        });
 
-          mutations.push(mut);
-        }
+        mutations.push(mutation);
       });
 
-      // We can assume the operations will succeed
-      pullAll(this.classAttendanceSynced, attendancesRemoved);
-      this.classAttendanceSynced = uniq(this.classAttendanceSynced.concat(attendancesUnsynced));
-
-      if (typeof newClassAttendancePersons !== 'undefined') {
-        forIn(newClassAttendancePersons, (personsInAttendanceIds, classId) => {
-          const mut = createClassAttendanceWith.call(this, {
-            classOccurredAt: new Date(),
-            classId,
-            personsInAttendanceIds,
-          });
-
-          mutations.push(mut);
-        });
+      return mutations;
+    },
+    syncAllClassAttendance() {
+      if (this.classAttendancesNeedSyncing !== true) {
+        return;
       }
+
+      this.isSaveLoading = true;
+      this.loadingCounter += 1;
+
+      let mutations = [];
+
+      this.DayOfWeek.classes.forEach((c) => {
+        mutations = mutations.concat(this.syncAttendanceForClass(c.id));
+      });
 
       if (mutations.length > 0) {
         Promise.all(mutations)
@@ -537,7 +471,8 @@ export default {
           })
           .then(() => {
             this.loadingCounter -= 1;
-            this.classAttendanceNeedsSyncing = false;
+            this.classAttendances = cloneDeep(this.classAttendancesUnsynced);
+            this.classAttendancesNeedSyncing = false;
             this.$q.notify('Attendance saved.');
             this.isSaveLoading = false;
           });
