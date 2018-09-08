@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { date } from 'quasar';
 import { isStudent } from '../lib/PersonHelper';
 import RankDisplay from './RankDisplay';
@@ -56,25 +57,7 @@ export default {
   },
   methods: {
     getAgeDisplay(dStr) {
-      const today = new Date();
-      let d;
-      let display = '&nbsp;';
-      let isAtLeastMonth = false;
-      let isAtLeastDate = false;
-
-      if (date.isValid(dStr)) {
-        d = new Date(dStr);
-        display = date.getDateDiff(today, d, 'years');
-
-        isAtLeastMonth = today.getMonth() >= d.getMonth();
-        isAtLeastDate = today.getDate() >= d.getDate();
-
-        if (!isAtLeastMonth || !isAtLeastDate) {
-          display -= 1;
-        }
-      }
-
-      return display;
+      return dStr ? moment().diff(moment(dStr), 'years') : '&nbsp;';
     },
     getBirthdayDisplay(dStr) {
       let d;
@@ -88,24 +71,7 @@ export default {
       return display;
     },
     getExperienceDisplay(dStr) {
-      let d;
-      let diff;
-      let display = '&nbsp;';
-      let unit = 'years';
-
-      if (date.isValid(dStr)) {
-        d = new Date(dStr);
-        diff = date.getDateDiff(new Date(), d, unit);
-
-        if (diff < 2) {
-          unit = 'months';
-          diff = date.getDateDiff(new Date(), d, unit);
-        }
-
-        display = `${diff} ${unit}`;
-      }
-
-      return display;
+      return dStr ? moment(dStr).fromNow(true) : '&nbsp;';
     },
   },
 };
