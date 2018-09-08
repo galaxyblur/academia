@@ -40,7 +40,7 @@
 
 <script>
 import { required } from 'vuelidate/lib/validators';
-import colors from '../json/colors';
+import colors from '../json/colors.json';
 import { getStrings } from '../lib/StringsHelper';
 
 const strings = getStrings();
