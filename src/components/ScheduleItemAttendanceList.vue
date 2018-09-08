@@ -113,6 +113,7 @@ export default {
     'class-obj',
     'class-attendance',
     'is-attendance-editable',
+    'is-set-to-today',
     'persons',
     'persons-unknown',
   ],
@@ -166,7 +167,7 @@ export default {
     isClassHappeningNowish(classObj) {
       const sec = getSecondsSinceMidnight();
 
-      return this.isSetToToday && sec < classObj.endsAt && sec >= (classObj.startsAt - 600);
+      return this.isSetToToday && sec <= classObj.endsAt && sec >= (classObj.startsAt - 600);
     },
   },
 };

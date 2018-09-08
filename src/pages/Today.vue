@@ -63,6 +63,7 @@
           :class-attendance="classAttendances[c.id]"
           @update:class-attendance="handleClassAttendanceUpdated(c.id, $event)"
           :is-attendance-editable="isAttendanceEditable"
+          :is-set-to-today="isSetToToday"
           :persons="getPersonsForClass(c)"
           :persons-unknown="getPersonsForClass(c, 'unknown')"
         />
@@ -139,7 +140,6 @@ import PersonsList from '../components/PersonsList';
 import PersonUpdate from '../components/PersonUpdate';
 import ScheduleItemAttendanceList from '../components/ScheduleItemAttendanceList';
 
-import { getSecondsSinceMidnight } from '../lib/DateHelper';
 import { getStrings } from '../lib/StringsHelper';
 
 const strings = getStrings();
@@ -395,9 +395,6 @@ export default {
         const attendancesAdded = this.getAttendancesAddedForClass(c.id);
         const attendancesRemoved = this.getAttendancesRemovedForClass(c.id);
 
-        console.warn('attendancesAdded', c.id, attendancesAdded);
-        console.warn('attendancesRemoved', c.id, attendancesRemoved);
-
         needsSyncing = needsSyncing || attendancesAdded.length > 0 || attendancesRemoved.length > 0;
       });
 
@@ -533,11 +530,6 @@ export default {
       });
 
       return personIds;
-    },
-    isClassHappeningNowish(classObj) {
-      const sec = getSecondsSinceMidnight();
-
-      return this.isSetToToday && sec < classObj.endsAt && sec >= (classObj.startsAt - 600);
     },
     goToPersonsNoBirthdate() {
       this.$router.push({ name: 'PersonsNoBirthdate' });
