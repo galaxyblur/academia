@@ -2,13 +2,35 @@ import { isFunction } from 'lodash';
 import { Base64 } from 'js-base64';
 import decode from 'jwt-decode';
 import auth0 from 'auth0-js';
+import sha256 from 'crypto-js/sha256';
+import axios from 'axios';
 
 const ID_TOKEN_KEY = 'id_token';
 const CLIENT_ID = 'P8s0A2fYfC3MtSuhqiN2GlNASO4FUwrB';
 const CLIENT_DOMAIN = 'capoeira-online.auth0.com';
+// const API_IDENTIFIER = 'https://co-academia.com';
 const REDIRECT = process.env.AUTH_CALLBACK_URL;
 const SCOPE = 'openid email profile';
-const AUDIENCE = `https://${CLIENT_DOMAIN}/userinfo`;
+// const AUDIENCE = `https://${CLIENT_DOMAIN}/userinfo`;
+
+const vBytes = new Uint8Array(32);
+const vRandom = window.crypto.getRandomValues(vBytes);
+const verifier = Base64.encode(vRandom);
+
+function getChallenge() {
+  return Base64.encode(sha256(verifier));
+}
+
+export function exchangeCode(code) {
+  window.console.warn(code);
+  return axios.post(`https://${CLIENT_DOMAIN}/oauth/token`, {
+    grant_type: 'authorization_code',
+    client_id: CLIENT_ID,
+    code_verifier: verifier,
+    code,
+    redirect_uri: REDIRECT,
+  });
+}
 
 const auth = new auth0.WebAuth({
   clientID: CLIENT_ID,
@@ -100,6 +122,9 @@ export function getIdToken() {
 }
 
 export function login() {
+  window.location.href = `https://${CLIENT_DOMAIN}/authorize?scope=${SCOPE}&response_type=code&client_id=${CLIENT_ID}&code_challenge=${getChallenge()}&code_challenge_method=S256&redirect_uri=${REDIRECT}`;
+
+  /*
   const nonce = getRandomString(16);
   setStoredNonce(nonce);
 
@@ -111,6 +136,7 @@ export function login() {
     nonce,
     state: Base64.encode(nonce),
   });
+  */
 }
 
 export function hasIdToken() {

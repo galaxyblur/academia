@@ -67,6 +67,7 @@ export default [
       {
         name: 'AuthenticationCallback',
         path: 'auth-callback', // #access_token=:accessToken&scope=:scope&expires_in=:expiresIn&token_type=:tokenType&state=:state&id_token=:idToken',
+        props: route => ({ code: route.query.code, state: route.query.state }),
         component: () => import('pages/AuthenticationCallback'),
       },
       {

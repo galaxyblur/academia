@@ -15,6 +15,7 @@ import { getStrings } from '../lib/StringsHelper';
 const strings = getStrings();
 
 import {
+  exchangeCode,
   getAndStoreParameters,
   getAuthId,
   getEmail,
@@ -23,6 +24,15 @@ import {
   setUserId,
   logout,
 } from '../lib/AuthHelper';
+
+function getURLParams() {
+  const s = window.location.search.substring(1);
+
+  return s ? JSON.parse(
+    `{"${s.replace(/&/g, '","').replace(/=/g, '":"')}"}`,
+    (key, value) => (key === '' ? value : decodeURIComponent(value)),
+  ) : {};
+}
 
 export default {
   name: 'authentication-callback',
@@ -36,7 +46,10 @@ export default {
   },
   mounted() {
     this.$q.loading.show();
-    this.handleAuth();
+    // this.handleAuth();
+    window.console.warn('auth-callback');
+    window.console.warn(getURLParams());
+    exchangeCode(getURLParams().code);
   },
   methods: {
     createUserAndGroup(groupName) {

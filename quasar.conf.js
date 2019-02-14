@@ -36,6 +36,7 @@ module.exports = function (ctx) {
       },
       scopeHoisting: true,
       vueRouterMode: 'history',
+      publicPath: '/',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
